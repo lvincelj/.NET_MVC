@@ -3,18 +3,12 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -LogPath C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt"
-      }
+      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -LogPath C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt"}
     ],
     "preToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -LogPath C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt"
-      }
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -LogPath C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt"}
     ]
   }
-    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName UserPromptSubmit -LogPath lab-1\\agent-log.txt"
-    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName preToolUse -LogPath lab-1\\agent-log.txt"
 }
-    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName UserPromptSubmit -LogPath lab-1\\agent-log.txt"
-    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName preToolUse -LogPath lab-1\\agent-log.txt"
