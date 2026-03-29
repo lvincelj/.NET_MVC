@@ -6,3 +6,7 @@
 {"timestamp":"2026-03-29T18:30:00.000Z","hook_event_name":"UserPromptSubmit","session_id":"b7d9e3f0-1234-4abc-9def-0123456789ab","transcript_path":"","tool_name":"assistant_input","tool_input":{"prompt":"test log 123"},"tool_use_id":"call_testlog123_1","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"}
 
 {"timestamp":"2026-03-29T18:35:00.000Z","hook_event_name":"UserPromptSubmit","session_id":"c0ffee12-3456-789a-bcde-f0123456789a","transcript_path":"","tool_name":"assistant_input","tool_input":{"prompt":"this is a test promt"},"tool_use_id":"call_test_prompt_1","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"}
+
+{"timestamp":"2026-03-29T18:40:00.000Z","hook_event_name":"UserPromptSubmit","session_id":"d4e5f6a7-b8c9-0d1e-2345-67890abcdef1","transcript_path":"","tool_name":"assistant_input","tool_input":{"prompt":"test log 123"},"tool_use_id":"call_manual_append_1","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"}
+
+{"timestamp":"2026-03-29T18:50:00.000Z","hook_event_name":"UserPromptSubmit","session_id":"fa3b2c1d-4567-89ab-cdef-0123456789ab","transcript_path":"","tool_name":"assistant_input","tool_input":{"prompt":"test test log"},"tool_use_id":"call_test_test_log","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"}
