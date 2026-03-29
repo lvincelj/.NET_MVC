@@ -1,5 +1,5 @@
 param(
-    [string]$LogPath = "C:\Users\Luka Vincelj\source\repos\.NET_MVC\lab-1\agent_log.txt"
+    [string]$LogPath = "C:\Users\Luka Vincelj\source\repos\.NET_MVC\lab-1\agent-log.txt"
 )
 
 $payload = [Console]::In.ReadToEnd()
