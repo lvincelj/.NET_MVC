@@ -1,2 +1,3 @@
 {"transcript_path":"","timestamp":"2026-03-29T12:44:13.2734109Z","prompt":"log test 123","session_id":"d74d9cbb-a5e4-4bb6-9720-23fd40c53b00","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC","hook_event_name":"UserPromptSubmit"}
 {"transcript_path":"","timestamp":"2026-03-29T12:48:11.5273774Z","prompt":"test log 123","session_id":"d74d9cbb-a5e4-4bb6-9720-23fd40c53b00","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC","hook_event_name":"UserPromptSubmit"}
+{"transcript_path":"","timestamp":"2026-03-29T12:56:01.2644423Z","prompt":"test log 123","session_id":"d74d9cbb-a5e4-4bb6-9720-23fd40c53b00","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC","hook_event_name":"UserPromptSubmit"}
