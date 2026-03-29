@@ -3,13 +3,13 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$inputData = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\scripts\\emit-log-entry.ps1' -prompt $inputData -hook_event_name 'UserPromptSubmit'\""
       }
     ],
     "preToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent-log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$inputData = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\scripts\\emit-log-entry.ps1' -prompt $inputData -hook_event_name 'preToolUse'\""
       }
     ]
   }

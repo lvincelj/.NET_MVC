@@ -1,1 +1,3 @@
 test log 123
+{"transcript_path":"","timestamp":"2026-03-29T12:31:06.5666832Z","prompt":"test entry","session_id":"f3995a6a-0198-4ccf-accd-c968bd69f444","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC","hook_event_name":"UserPromptSubmit"}
+{"transcript_path":"","timestamp":"2026-03-29T12:33:04.7115459Z","prompt":"another test","session_id":"d74d9cbb-a5e4-4bb6-9720-23fd40c53b00","cwd":"C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC","hook_event_name":"UserPromptSubmit"}
