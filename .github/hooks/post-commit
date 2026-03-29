@@ -1,0 +1,5 @@
+#!/bin/sh
+# post-commit hook: append last commit message to agent log via write-hook-log.ps1
+# This script is intended to be used with Git for Windows (sh).
+
+git log -1 --pretty=%B | powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -LogPath "lab-1/agent-log.txt"
