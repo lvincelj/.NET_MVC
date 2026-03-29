@@ -6,8 +6,4 @@ namespace HospitalManagementApp.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
-
-    //test
-
-
 }
