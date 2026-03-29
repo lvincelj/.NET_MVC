@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $p = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\.github\\hooks\\emit-log-entry.ps1' -prompt $p -AutoConfirm }\""
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $p = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\.github\\hooks\\emit-log-entry.ps1' -prompt $p -AutoConfirm }\""
+      }
+    ]
+  }
+}
