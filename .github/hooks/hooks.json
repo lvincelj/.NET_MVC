@@ -13,6 +13,8 @@
       }
     ]
   }
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName UserPromptSubmit -LogPath lab-1\\agent-log.txt"
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName preToolUse -LogPath lab-1\\agent-log.txt"
 }
     "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName UserPromptSubmit -LogPath lab-1\\agent-log.txt"
     "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github/hooks/write-hook-log.ps1 -HookEventName preToolUse -LogPath lab-1\\agent-log.txt"
