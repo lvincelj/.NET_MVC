@@ -126,6 +126,51 @@ foreach (var patient in allPatients)
     Console.WriteLine(new string('-', 50));
 }
 
+// ============================================================
+// 6. LINQ QUERIES
+// ============================================================
+
+// Query 1: Find all female patients
+var femalePatients = allPatients.Where(p => p.Gender == Gender.Female).ToList();
+Console.WriteLine("\n=== LINQ 1: Female Patients ===");
+foreach (var p in femalePatients)
+{
+    Console.WriteLine($"  {p.FirstName} {p.LastName}");
+}
+
+// Query 2: Sort appointments by scheduled date (earliest first)
+var sortedAppointments = appointments.OrderBy(a => a.ScheduledAt).ToList();
+Console.WriteLine("\n=== LINQ 2: Appointments Sorted by Date ===");
+foreach (var a in sortedAppointments)
+{
+    Console.WriteLine($"  {a.Patient.FirstName} {a.Patient.LastName} with Dr. {a.Doctor.LastName} on {a.ScheduledAt:yyyy-MM-dd} in Room {a.Room}");
+}
+
+// Query 3: Get only patient full names
+var patientNames = allPatients.Select(p => p.FirstName + " " + p.LastName).ToList();
+Console.WriteLine("\n=== LINQ 3: Patient Full Names ===");
+foreach (var name in patientNames)
+{
+    Console.WriteLine($"  {name}");
+}
+
+// Query 4: Find patients born before 1991 (older patients)
+var olderPatients = allPatients.Where(p => p.DateOfBirth.Year < 1991).ToList();
+Console.WriteLine("\n=== LINQ 4: Patients Born Before 1991 ===");
+foreach (var p in olderPatients)
+{
+    Console.WriteLine($"  {p.FirstName} {p.LastName} (born {p.DateOfBirth:yyyy-MM-dd})");
+}
+
+// Query 5: Find all doctors who work in departments located in Building A
+var allDoctors = new List<Doctor> { doc1, doc2, doc3 };
+var doctorsInBuildingA = allDoctors.Where(d => d.Departments.Any(dept => dept.Location.Contains("Building A"))).ToList();
+Console.WriteLine("\n=== LINQ 5: Doctors in Building A ===");
+foreach (var d in doctorsInBuildingA)
+{
+    Console.WriteLine($"  Dr. {d.FirstName} {d.LastName} ({d.Specialty})");
+}
+
 var app = builder.Build();
 
 // Standard ASP.NET Core Middleware
