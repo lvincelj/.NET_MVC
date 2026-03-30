@@ -1,12 +1,16 @@
 {
-  "UserPromptSubmit": [
-    {
-      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $p = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\.github\\hooks\\emit-log-entry.ps1' -prompt $p -LogPath 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt' -AutoConfirm }\""
-    }
-  ],
-  "preToolUse": [
-    {
-      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& { $p = [Console]::In.ReadToEnd(); & 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\.github\\hooks\\emit-log-entry.ps1' -prompt $p -LogPath 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt' -AutoConfirm }\""
-    }
-  ]
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt'\""
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt'\""
+      }
+    ]
+  }
 }

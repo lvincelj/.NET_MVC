@@ -1,5 +1,6 @@
 namespace HospitalManagementApp.Models
 {
+
     public enum Gender
     {
         Unknown = 0,
