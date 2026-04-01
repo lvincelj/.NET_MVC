@@ -171,6 +171,18 @@ foreach (var d in doctorsInBuildingA)
     Console.WriteLine($"  Dr. {d.FirstName} {d.LastName} ({d.Specialty})");
 }
 
+// Query 6: Find the first appointment scheduled in Room A201
+var firstAppointmentInA201 = appointments.FirstOrDefault(a => a.Room == "A201");
+Console.WriteLine("\n=== LINQ 6: First Appointment In Room A201 ===");
+if (firstAppointmentInA201 != null)
+{
+    Console.WriteLine($"  {firstAppointmentInA201.Patient.FirstName} {firstAppointmentInA201.Patient.LastName} with Dr. {firstAppointmentInA201.Doctor.LastName} on {firstAppointmentInA201.ScheduledAt:yyyy-MM-dd}");
+}
+else
+{
+    Console.WriteLine("  No appointment found in Room A201.");
+}
+
 var app = builder.Build();
 
 // Standard ASP.NET Core Middleware
