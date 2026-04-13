@@ -1,0 +1,32 @@
+@model IEnumerable<HospitalManagementApp.Models.Medication>
+@{
+    ViewData["Title"] = "Medications";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Medications</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Medications</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="hm-cards-grid" aria-label="Medications list">
+    @foreach (var med in Model)
+    {
+        <div class="hm-card">
+            <div class="hm-card__header">
+                <span class="hm-card__title">@med.Name</span>
+            </div>
+            <div class="hm-card__body">
+                <p><strong>Dosage:</strong> @med.Dosage</p>
+                <p><strong>Instructions:</strong> @med.Instructions</p>
+            </div>
+            <div class="hm-card__footer">
+                <a class="hm-btn-primary" asp-controller="Medications" asp-action="Details" asp-route-id="@med.Id">Details</a>
+            </div>
+        </div>
+    }
+</section>

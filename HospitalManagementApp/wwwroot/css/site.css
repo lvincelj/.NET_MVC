@@ -29,3 +29,329 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* ===== Hospital Management Design System ===== */
+:root {
+    --hm-primary:      #1A2B4A;
+    --hm-accent:       #00B8A0;
+    --hm-bg:           #F4F6FA;
+    --hm-card-bg:      #FFFFFF;
+    --hm-radius:       12px;
+    --hm-shadow:       0 2px 12px rgba(26,43,74,0.10);
+    --hm-sidebar-w:    240px;
+    --hm-font:         "Inter", "Segoe UI", sans-serif;
+    --hm-text:         #1A2B4A;
+    --hm-muted:        #6B7A99;
+    --hm-border:       #E0E6F0;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: var(--hm-font);
+    background: var(--hm-bg);
+    color: var(--hm-text);
+    margin: 0;
+    padding: 0;
+}
+
+.hm-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.hm-sidebar {
+    width: var(--hm-sidebar-w);
+    background: var(--hm-primary);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: width 0.25s ease;
+    overflow: hidden;
+}
+
+.hm-sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 20px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.hm-sidebar__nav {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    flex: 1;
+}
+
+.hm-sidebar__nav li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.93rem;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.hm-sidebar__nav li a:hover,
+.hm-sidebar__nav li a.active {
+    background: rgba(0,184,160,0.15);
+    color: #fff;
+    border-left-color: var(--hm-accent);
+}
+
+/* ===== Main Content ===== */
+.hm-content {
+    margin-left: var(--hm-sidebar-w);
+    flex: 1;
+    padding: 36px 40px;
+    min-height: 100vh;
+}
+
+/* ===== Page Header ===== */
+.hm-page-header { margin-bottom: 28px; }
+
+.hm-page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--hm-primary);
+    margin: 0 0 8px;
+}
+
+.hm-section-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--hm-primary);
+    margin: 32px 0 16px;
+}
+
+/* ===== Breadcrumb ===== */
+.hm-breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.hm-breadcrumb .breadcrumb-item a {
+    color: var(--hm-accent);
+    text-decoration: none;
+}
+
+.hm-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: var(--hm-muted);
+}
+
+.hm-breadcrumb .breadcrumb-item.active { color: var(--hm-muted); }
+
+/* ===== Cards Grid ===== */
+.hm-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ===== Card ===== */
+.hm-card {
+    background: var(--hm-card-bg);
+    border-radius: var(--hm-radius);
+    box-shadow: var(--hm-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--hm-border);
+    transition: box-shadow 0.2s;
+}
+
+.hm-card:hover { box-shadow: 0 6px 24px rgba(26,43,74,0.16); }
+
+.hm-card__header {
+    background: var(--hm-primary);
+    color: #fff;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.hm-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hm-card__badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+
+.hm-card__badge--active   { background: var(--hm-accent); color: #fff; }
+.hm-card__badge--male     { background: #3B82F6; color: #fff; }
+.hm-card__badge--female   { background: #EC4899; color: #fff; }
+.hm-card__badge--scheduled { background: #3B82F6; color: #fff; }
+.hm-card__badge--completed { background: #10B981; color: #fff; }
+.hm-card__badge--cancelled { background: #EF4444; color: #fff; }
+.hm-card__badge--inprogress { background: #F59E0B; color: #fff; }
+
+.hm-card__body {
+    padding: 16px 18px;
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--hm-text);
+}
+
+.hm-card__body p { margin: 0 0 6px; }
+.hm-card__body p:last-child { margin-bottom: 0; }
+.hm-card__body strong { color: var(--hm-primary); font-weight: 600; }
+
+.hm-card__footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--hm-border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ===== Detail Card ===== */
+.hm-detail-card {
+    background: var(--hm-card-bg);
+    border-radius: var(--hm-radius);
+    box-shadow: var(--hm-shadow);
+    border: 1px solid var(--hm-border);
+    overflow: hidden;
+    max-width: 700px;
+    margin-bottom: 32px;
+}
+
+.hm-detail-card__header {
+    background: var(--hm-primary);
+    color: #fff;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hm-detail-card__body { padding: 20px 24px; }
+
+.hm-field-row {
+    display: flex;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hm-border);
+    font-size: 0.92rem;
+}
+
+.hm-field-row:last-child { border-bottom: none; }
+
+.hm-field-label {
+    width: 180px;
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--hm-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+}
+
+.hm-field-value { flex: 1; color: var(--hm-text); }
+.hm-field-value a { color: var(--hm-accent); text-decoration: none; }
+.hm-field-value a:hover { text-decoration: underline; }
+
+/* ===== Buttons ===== */
+.hm-btn-primary {
+    background: var(--hm-accent);
+    border: 2px solid var(--hm-accent);
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 6px 16px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.hm-btn-primary:hover, .hm-btn-primary:focus {
+    background: #009e8a;
+    border-color: #009e8a;
+    color: #fff;
+    outline: 2px solid var(--hm-accent);
+    outline-offset: 2px;
+}
+
+/* ===== Back link ===== */
+.hm-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--hm-accent);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.hm-back-link:hover { text-decoration: underline; }
+
+/* ===== Status ===== */
+.hm-status {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.hm-status--scheduled  { background: #DBEAFE; color: #1D4ED8; }
+.hm-status--completed  { background: #D1FAE5; color: #065F46; }
+.hm-status--cancelled  { background: #FEE2E2; color: #991B1B; }
+.hm-status--inprogress { background: #FEF3C7; color: #92400E; }
+.hm-status--checkedin  { background: #E0E7FF; color: #3730A3; }
+.hm-status--noshow     { background: #F3F4F6; color: #6B7280; }
+
+/* ===== Responsive ===== */
+@media (max-width: 991.98px) {
+    .hm-sidebar { width: 60px; }
+    .hm-sidebar .hm-sidebar__brand span,
+    .hm-sidebar .hm-sidebar__nav li a span { display: none; }
+    .hm-sidebar__nav li a { justify-content: center; padding: 14px 0; }
+    .hm-content { margin-left: 60px; padding: 24px 20px; }
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--hm-accent);
+    outline-offset: 2px;
+}

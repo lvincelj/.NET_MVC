@@ -1,0 +1,33 @@
+@model IEnumerable<HospitalManagementApp.Models.Department>
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Departments</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Departments</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="hm-cards-grid" aria-label="Departments list">
+    @foreach (var dept in Model)
+    {
+        <div class="hm-card">
+            <div class="hm-card__header">
+                <span class="hm-card__title">@dept.Name</span>
+            </div>
+            <div class="hm-card__body">
+                <p><strong>Location:</strong> @dept.Location</p>
+                <p><strong>Phone:</strong> @dept.PhoneNumber</p>
+                <p><strong>Head:</strong> @dept.HeadOfDepartment</p>
+            </div>
+            <div class="hm-card__footer">
+                <a class="hm-btn-primary" asp-controller="Departments" asp-action="Details" asp-route-id="@dept.Id">Details</a>
+            </div>
+        </div>
+    }
+</section>

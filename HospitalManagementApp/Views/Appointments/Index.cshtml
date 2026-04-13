@@ -1,0 +1,40 @@
+@model IEnumerable<HospitalManagementApp.Models.Appointment>
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Appointments</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Appointments</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="hm-cards-grid" aria-label="Appointments list">
+    @foreach (var appt in Model)
+    {
+        <div class="hm-card">
+            <div class="hm-card__header">
+                <span class="hm-card__title">@appt.ScheduledAt.ToString("dd MMM yyyy HH:mm")</span>
+                <span class="hm-card__badge hm-card__badge--@appt.Status.ToString().ToLower()">@appt.Status</span>
+            </div>
+            <div class="hm-card__body">
+                @if (appt.Patient != null)
+                {
+                    <p><strong>Patient:</strong> @appt.Patient.FirstName @appt.Patient.LastName</p>
+                }
+                @if (appt.Doctor != null)
+                {
+                    <p><strong>Doctor:</strong> Dr. @appt.Doctor.FirstName @appt.Doctor.LastName</p>
+                }
+                <p><strong>Room:</strong> @appt.Room</p>
+            </div>
+            <div class="hm-card__footer">
+                <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a>
+            </div>
+        </div>
+    }
+</section>

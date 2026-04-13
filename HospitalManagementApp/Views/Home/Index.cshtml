@@ -1,8 +1,70 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb hm-breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+    </ol>
+</nav>
+
+<!-- Hero Banner -->
+<div style="background:#1A2B4A;color:#fff;padding:2.5rem 2rem;border-radius:16px;margin-bottom:2rem;border-left:4px solid #00B8A0;">
+    <h1 style="font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Hospital Management System</h1>
+    <p style="font-size:1.05rem;opacity:0.85;margin:0;">Manage patients, doctors, appointments and records all in one place.</p>
+</div>
+
+<!-- Quick Navigation -->
+<h2 class="hm-section-title">Quick Navigation</h2>
+<div style="display:flex;flex-direction:column;">
+
+    <a asp-controller="Patients" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Patients</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="Doctors" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Doctors</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="Departments" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Departments</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="Appointments" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Appointments</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="MedicalRecords" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Medical Records</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="Medications" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Medications</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
+    <a asp-controller="Prescriptions" asp-action="Index"
+       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
+       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
+        <span>Prescriptions</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
+    </a>
+
 </div>

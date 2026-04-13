@@ -1,0 +1,91 @@
+@model HospitalManagementApp.Models.Doctor
+@{
+    ViewData["Title"] = $"Dr. {Model.FirstName} {Model.LastName}";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Dr. @Model.FirstName @Model.LastName</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Doctors" asp-action="Index">Doctors</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.FirstName @Model.LastName</li>
+        </ol>
+    </nav>
+</div>
+
+<a class="hm-back-link" asp-controller="Doctors" asp-action="Index">‹ Back to Doctors</a>
+
+<div class="hm-detail-card">
+    <div class="hm-detail-card__header">Doctor Details</div>
+    <div class="hm-detail-card__body">
+        <div class="hm-field-row">
+            <span class="hm-field-label">Full Name</span>
+            <span class="hm-field-value">Dr. @Model.FirstName @Model.LastName</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Gender</span>
+            <span class="hm-field-value">@Model.Gender</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Specialty</span>
+            <span class="hm-field-value">@Model.Specialty</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Email</span>
+            <span class="hm-field-value">@Model.Email</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Phone</span>
+            <span class="hm-field-value">@Model.PhoneNumber</span>
+        </div>
+    </div>
+</div>
+
+@if (Model.Departments != null && Model.Departments.Any())
+{
+    <h2 class="hm-section-title">Departments</h2>
+    <section class="hm-cards-grid">
+        @foreach (var dept in Model.Departments)
+        {
+            <div class="hm-card">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@dept.Name</span>
+                </div>
+                <div class="hm-card__body">
+                    <p><strong>Location:</strong> @dept.Location</p>
+                    <p><strong>Phone:</strong> @dept.PhoneNumber</p>
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="Departments" asp-action="Details" asp-route-id="@dept.Id">Details</a>
+                </div>
+            </div>
+        }
+    </section>
+}
+
+@if (Model.Appointments != null && Model.Appointments.Any())
+{
+    <h2 class="hm-section-title">Appointments</h2>
+    <section class="hm-cards-grid">
+        @foreach (var appt in Model.Appointments)
+        {
+            <div class="hm-card">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@appt.ScheduledAt.ToString("dd MMM yyyy HH:mm")</span>
+                    <span class="hm-card__badge hm-card__badge--@appt.Status.ToString().ToLower()">@appt.Status</span>
+                </div>
+                <div class="hm-card__body">
+                    @if (appt.Patient != null)
+                    {
+                        <p><strong>Patient:</strong> @appt.Patient.FirstName @appt.Patient.LastName</p>
+                    }
+                    <p><strong>Room:</strong> @appt.Room</p>
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a>
+                </div>
+            </div>
+        }
+    </section>
+}

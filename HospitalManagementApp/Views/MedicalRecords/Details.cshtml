@@ -1,0 +1,72 @@
+@model HospitalManagementApp.Models.MedicalRecord
+@{
+    ViewData["Title"] = $"Medical Record #{Model.Id}";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Medical Record #@Model.Id</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="MedicalRecords" asp-action="Index">Medical Records</a></li>
+            <li class="breadcrumb-item active" aria-current="page">#@Model.Id</li>
+        </ol>
+    </nav>
+</div>
+
+<a class="hm-back-link" asp-controller="MedicalRecords" asp-action="Index">‹ Back to Medical Records</a>
+
+<div class="hm-detail-card">
+    <div class="hm-detail-card__header">Medical Record Details</div>
+    <div class="hm-detail-card__body">
+        @if (Model.Patient != null)
+        {
+            <div class="hm-field-row">
+                <span class="hm-field-label">Patient</span>
+                <span class="hm-field-value">
+                    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.Patient.Id">
+                        @Model.Patient.FirstName @Model.Patient.LastName
+                    </a>
+                </span>
+            </div>
+        }
+        <div class="hm-field-row">
+            <span class="hm-field-label">Diagnosis</span>
+            <span class="hm-field-value">@Model.Diagnosis</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Notes</span>
+            <span class="hm-field-value">@Model.Notes</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Created At</span>
+            <span class="hm-field-value">@Model.CreatedAt.ToString("dd MMM yyyy")</span>
+        </div>
+    </div>
+</div>
+
+@if (Model.Prescriptions != null && Model.Prescriptions.Any())
+{
+    <h2 class="hm-section-title">Prescriptions</h2>
+    <section class="hm-cards-grid">
+        @foreach (var rx in Model.Prescriptions)
+        {
+            <div class="hm-card">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">Prescription #@rx.Id</span>
+                </div>
+                <div class="hm-card__body">
+                    <p><strong>Issued By:</strong> Dr. @rx.IssuedBy</p>
+                    <p><strong>Issued At:</strong> @rx.IssuedAt.ToString("dd MMM yyyy")</p>
+                    @if (rx.Medications != null && rx.Medications.Any())
+                    {
+                        <p><strong>Medications:</strong> @string.Join(", ", rx.Medications.Select(m => m.Name))</p>
+                    }
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="Prescriptions" asp-action="Details" asp-route-id="@rx.Id">Details</a>
+                </div>
+            </div>
+        }
+    </section>
+}

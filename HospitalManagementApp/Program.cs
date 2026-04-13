@@ -130,57 +130,103 @@ foreach (var patient in allPatients)
 // 6. LINQ QUERIES
 // ============================================================
 
-// Query 1: Find all female patients
-var femalePatients = allPatients.Where(p => p.Gender == Gender.Female).ToList();
-Console.WriteLine("\n=== LINQ 1: Female Patients ===");
+// Query 1: Female patients with at least one medical record, ordered by last name
+var femalePatients = allPatients
+    .Where(p => p.Gender == Gender.Female && p.MedicalRecords.Any())
+    .OrderBy(p => p.LastName)
+    .ThenBy(p => p.FirstName)
+    .ToList();
+Console.WriteLine("\n=== LINQ 1: Female Patients With Records (Sorted) ===");
 foreach (var p in femalePatients)
 {
-    Console.WriteLine($"  {p.FirstName} {p.LastName}");
+    Console.WriteLine($"  {p.FirstName} {p.LastName} - Records: {p.MedicalRecords.Count}");
 }
 
-// Query 2: Sort appointments by scheduled date (earliest first)
-var sortedAppointments = appointments.OrderBy(a => a.ScheduledAt).ToList();
-Console.WriteLine("\n=== LINQ 2: Appointments Sorted by Date ===");
+// Query 2: Sort appointments by date, then doctor, and project to a compact view model
+var sortedAppointments = appointments
+    .OrderBy(a => a.ScheduledAt)
+    .ThenBy(a => a.Doctor.LastName)
+    .Select(a => new
+    {
+        PatientFullName = a.Patient.FirstName + " " + a.Patient.LastName,
+        DoctorLastName = a.Doctor.LastName,
+        Date = a.ScheduledAt,
+        a.Room
+    })
+    .ToList();
+Console.WriteLine("\n=== LINQ 2: Appointments Sorted by Date + Doctor ===");
 foreach (var a in sortedAppointments)
 {
-    Console.WriteLine($"  {a.Patient.FirstName} {a.Patient.LastName} with Dr. {a.Doctor.LastName} on {a.ScheduledAt:yyyy-MM-dd} in Room {a.Room}");
+    Console.WriteLine($"  {a.PatientFullName} with Dr. {a.DoctorLastName} on {a.Date:yyyy-MM-dd} in Room {a.Room}");
 }
 
-// Query 3: Get only patient full names
-var patientNames = allPatients.Select(p => p.FirstName + " " + p.LastName).ToList();
-Console.WriteLine("\n=== LINQ 3: Patient Full Names ===");
-foreach (var name in patientNames)
+// Query 3: Get patient full names with age and order by age descending
+var patientNames = allPatients
+    .Select(p => new
+    {
+        FullName = p.FirstName + " " + p.LastName,
+        Age = DateTime.Today.Year - p.DateOfBirth.Year - (DateTime.Today.DayOfYear < p.DateOfBirth.DayOfYear ? 1 : 0)
+    })
+    .OrderByDescending(p => p.Age)
+    .ToList();
+Console.WriteLine("\n=== LINQ 3: Patient Names With Age (Oldest First) ===");
+foreach (var p in patientNames)
 {
-    Console.WriteLine($"  {name}");
+    Console.WriteLine($"  {p.FullName} - {p.Age} years");
 }
 
-// Query 4: Find patients born before 1991 (older patients)
-var olderPatients = allPatients.Where(p => p.DateOfBirth.Year < 1991).ToList();
-Console.WriteLine("\n=== LINQ 4: Patients Born Before 1991 ===");
+// Query 4: Patients born before 1991, including total number of prescribed medications
+var olderPatients = allPatients
+    .Where(p => p.DateOfBirth.Year < 1991)
+    .Select(p => new
+    {
+        Patient = p,
+        MedicationCount = p.MedicalRecords
+            .SelectMany(r => r.Prescriptions)
+            .SelectMany(pr => pr.Medications)
+            .Count()
+    })
+    .OrderByDescending(x => x.MedicationCount)
+    .ToList();
+Console.WriteLine("\n=== LINQ 4: Patients Born Before 1991 + Medication Count ===");
 foreach (var p in olderPatients)
 {
-    Console.WriteLine($"  {p.FirstName} {p.LastName} (born {p.DateOfBirth:yyyy-MM-dd})");
+    Console.WriteLine($"  {p.Patient.FirstName} {p.Patient.LastName} (born {p.Patient.DateOfBirth:yyyy-MM-dd}) - Medications: {p.MedicationCount}");
 }
 
-// Query 5: Find all doctors who work in departments located in Building A
+// Query 5: Doctors in Building A with matching department names
 var allDoctors = new List<Doctor> { doc1, doc2, doc3 };
-var doctorsInBuildingA = allDoctors.Where(d => d.Departments.Any(dept => dept.Location.Contains("Building A"))).ToList();
-Console.WriteLine("\n=== LINQ 5: Doctors in Building A ===");
+var doctorsInBuildingA = allDoctors
+    .Where(d => d.Departments.Any(dept => dept.Location.Contains("Building A")))
+    .Select(d => new
+    {
+        Doctor = d,
+        BuildingADepartments = d.Departments
+            .Where(dept => dept.Location.Contains("Building A"))
+            .Select(dept => dept.Name)
+            .ToList()
+    })
+    .OrderBy(x => x.Doctor.LastName)
+    .ToList();
+Console.WriteLine("\n=== LINQ 5: Doctors in Building A + Departments ===");
 foreach (var d in doctorsInBuildingA)
 {
-    Console.WriteLine($"  Dr. {d.FirstName} {d.LastName} ({d.Specialty})");
+    Console.WriteLine($"  Dr. {d.Doctor.FirstName} {d.Doctor.LastName} ({d.Doctor.Specialty}) - {string.Join(", ", d.BuildingADepartments)}");
 }
 
-// Query 6: Find the first appointment scheduled in Room A201
-var firstAppointmentInA201 = appointments.FirstOrDefault(a => a.Room == "A201");
-Console.WriteLine("\n=== LINQ 6: First Appointment In Room A201 ===");
+// Query 6: Find the next scheduled appointment in Room A201 (from now onward)
+var firstAppointmentInA201 = appointments
+    .Where(a => a.Room == "A201" && a.Status == AppointmentStatus.Scheduled && a.ScheduledAt >= DateTime.Now)
+    .OrderBy(a => a.ScheduledAt)
+    .FirstOrDefault();
+Console.WriteLine("\n=== LINQ 6: Next Scheduled Appointment In Room A201 ===");
 if (firstAppointmentInA201 != null)
 {
-    Console.WriteLine($"  {firstAppointmentInA201.Patient.FirstName} {firstAppointmentInA201.Patient.LastName} with Dr. {firstAppointmentInA201.Doctor.LastName} on {firstAppointmentInA201.ScheduledAt:yyyy-MM-dd}");
+    Console.WriteLine($"  {firstAppointmentInA201.Patient.FirstName} {firstAppointmentInA201.Patient.LastName} with Dr. {firstAppointmentInA201.Doctor.LastName} on {firstAppointmentInA201.ScheduledAt:yyyy-MM-dd HH:mm}");
 }
 else
 {
-    Console.WriteLine("  No appointment found in Room A201.");
+    Console.WriteLine("  No upcoming scheduled appointment found in Room A201.");
 }
 
 var app = builder.Build();

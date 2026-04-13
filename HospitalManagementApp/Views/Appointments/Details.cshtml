@@ -1,0 +1,69 @@
+@model HospitalManagementApp.Models.Appointment
+@{
+    ViewData["Title"] = $"Appointment #{Model.Id}";
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">Appointment #@Model.Id</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Appointments" asp-action="Index">Appointments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">#@Model.Id</li>
+        </ol>
+    </nav>
+</div>
+
+<a class="hm-back-link" asp-controller="Appointments" asp-action="Index">‹ Back to Appointments</a>
+
+<div class="hm-detail-card">
+    <div class="hm-detail-card__header">
+        Appointment Details
+        <span class="hm-status hm-status--@Model.Status.ToString().ToLower()">@Model.Status</span>
+    </div>
+    <div class="hm-detail-card__body">
+        <div class="hm-field-row">
+            <span class="hm-field-label">Scheduled At</span>
+            <span class="hm-field-value">@Model.ScheduledAt.ToString("dd MMM yyyy HH:mm")</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Room</span>
+            <span class="hm-field-value">@Model.Room</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Status</span>
+            <span class="hm-field-value">
+                <span class="hm-status hm-status--@Model.Status.ToString().ToLower()">@Model.Status</span>
+            </span>
+        </div>
+        @if (Model.Patient != null)
+        {
+            <div class="hm-field-row">
+                <span class="hm-field-label">Patient</span>
+                <span class="hm-field-value">
+                    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.Patient.Id">
+                        @Model.Patient.FirstName @Model.Patient.LastName
+                    </a>
+                </span>
+            </div>
+        }
+        @if (Model.Doctor != null)
+        {
+            <div class="hm-field-row">
+                <span class="hm-field-label">Doctor</span>
+                <span class="hm-field-value">
+                    <a asp-controller="Doctors" asp-action="Details" asp-route-id="@Model.Doctor.Id">
+                        Dr. @Model.Doctor.FirstName @Model.Doctor.LastName
+                    </a>
+                </span>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="hm-field-row">
+                <span class="hm-field-label">Notes</span>
+                <span class="hm-field-value">@Model.Notes</span>
+            </div>
+        }
+    </div>
+</div>

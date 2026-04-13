@@ -1,0 +1,35 @@
+@model HospitalManagementApp.Models.Medication
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="hm-page-header">
+    <h1 class="hm-page-title">@Model.Name</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Medications" asp-action="Index">Medications</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+</div>
+
+<a class="hm-back-link" asp-controller="Medications" asp-action="Index">‹ Back to Medications</a>
+
+<div class="hm-detail-card">
+    <div class="hm-detail-card__header">Medication Details</div>
+    <div class="hm-detail-card__body">
+        <div class="hm-field-row">
+            <span class="hm-field-label">Name</span>
+            <span class="hm-field-value">@Model.Name</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Dosage</span>
+            <span class="hm-field-value">@Model.Dosage</span>
+        </div>
+        <div class="hm-field-row">
+            <span class="hm-field-label">Instructions</span>
+            <span class="hm-field-value">@Model.Instructions</span>
+        </div>
+    </div>
+</div>
