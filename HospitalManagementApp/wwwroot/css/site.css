@@ -355,3 +355,47 @@ a:focus-visible, button:focus-visible, input:focus-visible {
     outline: 2px solid var(--hm-accent);
     outline-offset: 2px;
 }
+
+/* ===== Table ===== */
+.hm-table-wrap {
+    background: var(--hm-card-bg);
+    border-radius: var(--hm-radius);
+    box-shadow: var(--hm-shadow);
+    border: 1px solid var(--hm-border);
+    overflow-x: auto;
+}
+
+.hm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.hm-table thead tr {
+    background: var(--hm-primary);
+    color: #fff;
+}
+
+.hm-table thead th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.hm-table tbody tr {
+    border-bottom: 1px solid var(--hm-border);
+    transition: background 0.12s;
+}
+
+.hm-table tbody tr:last-child { border-bottom: none; }
+.hm-table tbody tr:hover { background: #F0F4FF; }
+
+.hm-table tbody td {
+    padding: 12px 16px;
+    color: var(--hm-text);
+    vertical-align: middle;
+}

@@ -13,28 +13,32 @@
     </nav>
 </div>
 
-<section class="hm-cards-grid" aria-label="Appointments list">
-    @foreach (var appt in Model)
-    {
-        <div class="hm-card">
-            <div class="hm-card__header">
-                <span class="hm-card__title">@appt.ScheduledAt.ToString("dd MMM yyyy HH:mm")</span>
-                <span class="hm-card__badge hm-card__badge--@appt.Status.ToString().ToLower()">@appt.Status</span>
-            </div>
-            <div class="hm-card__body">
-                @if (appt.Patient != null)
-                {
-                    <p><strong>Patient:</strong> @appt.Patient.FirstName @appt.Patient.LastName</p>
-                }
-                @if (appt.Doctor != null)
-                {
-                    <p><strong>Doctor:</strong> Dr. @appt.Doctor.FirstName @appt.Doctor.LastName</p>
-                }
-                <p><strong>Room:</strong> @appt.Room</p>
-            </div>
-            <div class="hm-card__footer">
-                <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a>
-            </div>
-        </div>
-    }
-</section>
+<div class="hm-table-wrap">
+    <table class="hm-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Scheduled</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appt in Model)
+            {
+                <tr>
+                    <td>@appt.Id</td>
+                    <td>@(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "—")</td>
+                    <td>@(appt.Doctor != null ? $"Dr. {appt.Doctor.FirstName} {appt.Doctor.LastName}" : "—")</td>
+                    <td>@appt.ScheduledAt.ToString("dd MMM yyyy HH:mm")</td>
+                    <td>@appt.Room</td>
+                    <td><span class="hm-status hm-status--@appt.Status.ToString().ToLower()">@appt.Status</span></td>
+                    <td><a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -13,24 +13,28 @@
     </nav>
 </div>
 
-<section class="hm-cards-grid" aria-label="Medical records list">
-    @foreach (var record in Model)
-    {
-        <div class="hm-card">
-            <div class="hm-card__header">
-                <span class="hm-card__title">Record #@record.Id</span>
-            </div>
-            <div class="hm-card__body">
-                @if (record.Patient != null)
-                {
-                    <p><strong>Patient:</strong> @record.Patient.FirstName @record.Patient.LastName</p>
-                }
-                <p><strong>Diagnosis:</strong> @record.Diagnosis</p>
-                <p><strong>Created:</strong> @record.CreatedAt.ToString("dd MMM yyyy")</p>
-            </div>
-            <div class="hm-card__footer">
-                <a class="hm-btn-primary" asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@record.Id">Details</a>
-            </div>
-        </div>
-    }
-</section>
+<div class="hm-table-wrap">
+    <table class="hm-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Diagnosis</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model)
+            {
+                <tr>
+                    <td>@record.Id</td>
+                    <td>@(record.Patient != null ? $"{record.Patient.FirstName} {record.Patient.LastName}" : "—")</td>
+                    <td>@record.Diagnosis</td>
+                    <td>@record.CreatedAt.ToString("dd MMM yyyy")</td>
+                    <td><a class="hm-btn-primary" asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@record.Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

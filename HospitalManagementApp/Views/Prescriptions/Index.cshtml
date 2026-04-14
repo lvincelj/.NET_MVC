@@ -13,37 +13,30 @@
     </nav>
 </div>
 
-<div class="hm-cards-grid">
-    @foreach (var prescription in Model)
-    {
-        <div class="hm-card">
-            <div class="hm-card__header">
-                Prescription #@prescription.Id
-            </div>
-            <div class="hm-card__body">
-                <div class="hm-field-row">
-                    <span class="hm-field-label">Issued By</span>
-                    <span class="hm-field-value">@prescription.IssuedBy</span>
-                </div>
-                <div class="hm-field-row">
-                    <span class="hm-field-label">Issued At</span>
-                    <span class="hm-field-value">@prescription.IssuedAt.ToString("dd MMM yyyy")</span>
-                </div>
-                @if (prescription.MedicalRecord?.Patient != null)
-                {
-                    <div class="hm-field-row">
-                        <span class="hm-field-label">Patient</span>
-                        <span class="hm-field-value">@prescription.MedicalRecord.Patient.FirstName @prescription.MedicalRecord.Patient.LastName</span>
-                    </div>
-                }
-                <div class="hm-field-row">
-                    <span class="hm-field-label">Medications</span>
-                    <span class="hm-field-value">@prescription.Medications.Count item(s)</span>
-                </div>
-            </div>
-            <div class="hm-card__footer">
-                <a class="hm-btn-primary" asp-controller="Prescriptions" asp-action="Details" asp-route-id="@prescription.Id">View Details</a>
-            </div>
-        </div>
-    }
+<div class="hm-table-wrap">
+    <table class="hm-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Issued By</th>
+                <th>Issued At</th>
+                <th>Medications</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prescription in Model)
+            {
+                <tr>
+                    <td>@prescription.Id</td>
+                    <td>@(prescription.MedicalRecord?.Patient != null ? $"{prescription.MedicalRecord.Patient.FirstName} {prescription.MedicalRecord.Patient.LastName}" : "—")</td>
+                    <td>@prescription.IssuedBy</td>
+                    <td>@prescription.IssuedAt.ToString("dd MMM yyyy")</td>
+                    <td>@prescription.Medications.Count</td>
+                    <td><a class="hm-btn-primary" asp-controller="Prescriptions" asp-action="Details" asp-route-id="@prescription.Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

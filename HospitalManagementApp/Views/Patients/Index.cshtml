@@ -13,22 +13,32 @@
     </nav>
 </div>
 
-<section class="hm-cards-grid" aria-label="Patients list">
-    @foreach (var patient in Model)
-    {
-        <div class="hm-card">
-            <div class="hm-card__header">
-                <span class="hm-card__title">@patient.FirstName @patient.LastName</span>
-                <span class="hm-card__badge hm-card__badge--@patient.Gender.ToString().ToLower()">@patient.Gender</span>
-            </div>
-            <div class="hm-card__body">
-                <p><strong>Date of Birth:</strong> @patient.DateOfBirth.ToString("dd MMM yyyy")</p>
-                <p><strong>Email:</strong> @patient.Email</p>
-                <p><strong>Phone:</strong> @patient.PhoneNumber</p>
-            </div>
-            <div class="hm-card__footer">
-                <a class="hm-btn-primary" asp-controller="Patients" asp-action="Details" asp-route-id="@patient.Id">Details</a>
-            </div>
-        </div>
-    }
-</section>
+<div class="hm-table-wrap">
+    <table class="hm-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Model)
+            {
+                <tr>
+                    <td>@patient.Id</td>
+                    <td>@patient.FirstName @patient.LastName</td>
+                    <td><span class="hm-card__badge hm-card__badge--@patient.Gender.ToString().ToLower()">@patient.Gender</span></td>
+                    <td>@patient.DateOfBirth.ToString("dd MMM yyyy")</td>
+                    <td>@patient.Email</td>
+                    <td>@patient.PhoneNumber</td>
+                    <td><a class="hm-btn-primary" asp-controller="Patients" asp-action="Details" asp-route-id="@patient.Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
