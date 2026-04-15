@@ -267,3 +267,73 @@
     "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
 }
 ---
+[2026-04-15 12:34:38]
+{
+    "timestamp":  "2026-04-15T10:34:38.6708450Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "što rade controleri i repozitoriji u mojoj aplikaciji, koju ulogu oni imaju?",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 12:42:29]
+{
+    "timestamp":  "2026-04-15T10:42:29.2642228Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "Objasni mi kod u Viewovima, Index i Details, sto on radi, probaj chunk po chunk sto se dogadja?",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 12:48:43]
+{
+    "timestamp":  "2026-04-15T10:48:43.8731028Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "sto su breadcrumbs",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 13:32:54]
+{
+    "timestamp":  "2026-04-15T11:32:54.6241744Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "objasni mi URL usmjeravanje i daj mi primjere iz mog programa",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 13:43:38]
+{
+    "timestamp":  "2026-04-15T11:43:38.3885422Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "malo detaljinije objasni kako je povezana cjela mvc arhitektura",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 13:49:45]
+{
+    "timestamp":  "2026-04-15T11:49:45.3983905Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "sto je razor sintaksa i gdje se primjenjuje u mom programu",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
+[2026-04-15 14:08:13]
+{
+    "timestamp":  "2026-04-15T12:08:13.2256407Z",
+    "hook_event_name":  "UserPrompt",
+    "session_id":  "sess-20260415-001",
+    "transcript_path":  "",
+    "prompt":  "objasni i URL rute",
+    "cwd":  "c:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC"
+}
+---
