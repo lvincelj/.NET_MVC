@@ -1,70 +1,124 @@
-﻿@{
+﻿@model HospitalManagementApp.Models.HomeDashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb hm-breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-    </ol>
-</nav>
+<div class="hm-dashboard">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb hm-breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
 
-<!-- Hero Banner -->
-<div style="background:#1A2B4A;color:#fff;padding:2.5rem 2rem;border-radius:16px;margin-bottom:2rem;border-left:4px solid #00B8A0;">
-    <h1 style="font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Hospital Management System</h1>
-    <p style="font-size:1.05rem;opacity:0.85;margin:0;">Manage patients, doctors, appointments and records all in one place.</p>
-</div>
+    <section class="hm-dashboard-hero">
+        <div class="hm-dashboard-hero__content">
+            <span class="hm-dashboard-eyebrow">Welcome back</span>
+            <h1 class="hm-dashboard-title">Hospital operations at a glance</h1>
+            <p class="hm-dashboard-subtitle">Monitor appointments, staff coverage, and patient activity from a single dashboard.</p>
+            <div class="hm-dashboard-hero__actions">
+                <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Index">Review Schedule</a>
+                <a class="hm-btn-secondary" asp-controller="Patients" asp-action="Index">Open Patients</a>
+            </div>
+        </div>
 
-<!-- Quick Navigation -->
-<h2 class="hm-section-title">Quick Navigation</h2>
-<div style="display:flex;flex-direction:column;">
+        <aside class="hm-dashboard-hero__aside" aria-label="Today at a glance">
+            <span class="hm-dashboard-panel-label">Today at a glance</span>
+            <div class="hm-dashboard-glance">
+                <strong>@Model.TodayAppointments</strong>
+                <span>appointments planned</span>
+            </div>
+            <div class="hm-dashboard-glance">
+                <strong>@Model.ActiveDoctors</strong>
+                <span>doctors on roster</span>
+            </div>
+            <div class="hm-dashboard-glance">
+                <strong>@Model.PendingRecords</strong>
+                <span>records ready for review</span>
+            </div>
+        </aside>
+    </section>
 
-    <a asp-controller="Patients" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Patients</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
+    <section class="hm-kpi-grid" aria-label="Dashboard statistics">
+        <article class="hm-kpi-card">
+            <span class="hm-kpi-label">Patients</span>
+            <strong class="hm-kpi-value">@Model.TotalPatients</strong>
+            <span class="hm-kpi-meta">registered patient profiles</span>
+        </article>
+        <article class="hm-kpi-card">
+            <span class="hm-kpi-label">Appointments Today</span>
+            <strong class="hm-kpi-value">@Model.TodayAppointments</strong>
+            <span class="hm-kpi-meta">scheduled visits for the current day</span>
+        </article>
+        <article class="hm-kpi-card">
+            <span class="hm-kpi-label">Departments</span>
+            <strong class="hm-kpi-value">@Model.DepartmentCount</strong>
+            <span class="hm-kpi-meta">service areas available to staff</span>
+        </article>
+        <article class="hm-kpi-card">
+            <span class="hm-kpi-label">Medication Catalog</span>
+            <strong class="hm-kpi-value">@Model.MedicationCount</strong>
+            <span class="hm-kpi-meta">active medication entries tracked</span>
+        </article>
+    </section>
 
-    <a asp-controller="Doctors" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Doctors</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
+    <section>
+        <div class="hm-section-heading">
+            <h2 class="hm-section-title">Quick Actions</h2>
+            <p class="hm-section-copy">Jump directly into the areas that keep daily hospital workflows moving.</p>
+        </div>
+        <div class="hm-action-grid">
+            @foreach (var action in Model.Actions)
+            {
+                <article class="hm-action-card hm-action-card--@action.Accent">
+                    <div class="hm-action-card__topline">
+                        <span class="hm-status-pill hm-status-pill--@action.Accent">@action.Metric</span>
+                    </div>
+                    <h3 class="hm-action-card__title">@action.Title</h3>
+                    <p class="hm-action-card__text">@action.Description</p>
+                    <div class="hm-action-card__links">
+                        <a asp-controller="@action.Controller" asp-action="Index">Open module</a>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
 
-    <a asp-controller="Departments" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Departments</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
+    <section class="hm-ops-grid">
+        <article class="hm-ops-card">
+            <div class="hm-section-heading hm-section-heading--tight">
+                <h2 class="hm-section-title">Upcoming Appointments</h2>
+                <p class="hm-section-copy">The next scheduled patient visits across the hospital.</p>
+            </div>
+            <div class="hm-ops-list">
+                @foreach (var item in Model.UpcomingAppointments)
+                {
+                    <div class="hm-ops-item">
+                        <div class="hm-ops-item__time">@item.TimeLabel</div>
+                        <div class="hm-ops-item__body">
+                            <strong>@item.PatientName</strong>
+                            <span>@item.DoctorName · Room @item.Room</span>
+                        </div>
+                        <span class="hm-status-pill hm-status-pill--neutral">@item.Status</span>
+                    </div>
+                }
+            </div>
+        </article>
 
-    <a asp-controller="Appointments" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Appointments</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
-
-    <a asp-controller="MedicalRecords" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Medical Records</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
-
-    <a asp-controller="Medications" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Medications</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
-
-    <a asp-controller="Prescriptions" asp-action="Index"
-       style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(26,43,74,0.08);margin-bottom:0.5rem;text-decoration:none;color:#1A2B4A;font-weight:500;border-left:3px solid transparent;transition:border-left-color 0.2s,box-shadow 0.2s;"
-       onmouseover="this.style.borderLeftColor='#00B8A0';this.style.boxShadow='0 2px 14px rgba(26,43,74,0.14)';"
-       onmouseout="this.style.borderLeftColor='transparent';this.style.boxShadow='0 2px 8px rgba(26,43,74,0.08)';">
-        <span>Prescriptions</span><span style="font-size:1.2rem;color:#00B8A0;">›</span>
-    </a>
-
+        <article class="hm-ops-card">
+            <div class="hm-section-heading hm-section-heading--tight">
+                <h2 class="hm-section-title">Operational Notes</h2>
+                <p class="hm-section-copy">A quick pulse check on documentation and coverage.</p>
+            </div>
+            <div class="hm-note-list">
+                @foreach (var note in Model.OperationalNotes)
+                {
+                    <div class="hm-note-item hm-note-item--@note.Tone">
+                        <strong>@note.Title</strong>
+                        <p>@note.Detail</p>
+                    </div>
+                }
+            </div>
+        </article>
+    </section>
 </div>

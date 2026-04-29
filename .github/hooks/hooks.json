@@ -3,13 +3,15 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -File \".github\\hooks\\log-agent-input.ps1\" -EventName UserPromptSubmit",
+        "timeout": 15
       }
     ],
-    "preToolUse": [
+    "PreToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\Users\\Luka Vincelj\\source\\repos\\.NET_MVC\\lab-1\\agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -File \".github\\hooks\\log-agent-input.ps1\" -EventName PreToolUse",
+        "timeout": 15
       }
     ]
   }
