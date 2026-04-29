@@ -1,5 +1,6 @@
 @model IEnumerable<HospitalManagementApp.Models.Appointment>
 @{
+    var appointments = Model.OrderBy(a => a.ScheduledAt).ToList();
     ViewData["Title"] = "Appointments";
 }
 
@@ -13,32 +14,49 @@
     </nav>
 </div>
 
-<div class="hm-table-wrap">
-    <table class="hm-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Patient</th>
-                <th>Doctor</th>
-                <th>Scheduled</th>
-                <th>Room</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var appt in Model)
-            {
-                <tr>
-                    <td>@appt.Id</td>
-                    <td>@(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "—")</td>
-                    <td>@(appt.Doctor != null ? $"Dr. {appt.Doctor.FirstName} {appt.Doctor.LastName}" : "—")</td>
-                    <td>@appt.ScheduledAt.ToString("dd MMM yyyy HH:mm")</td>
-                    <td>@appt.Room</td>
-                    <td><span class="hm-status hm-status--@appt.Status.ToString().ToLower()">@appt.Status</span></td>
-                    <td><a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<section class="hm-summary-strip">
+    <article class="hm-summary-card hm-summary-card--accent">
+        <span class="hm-summary-label">Total Appointments</span>
+        <strong class="hm-summary-value">@appointments.Count</strong>
+        <span class="hm-summary-meta">scheduled visits in the system</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--sky">
+        <span class="hm-summary-label">Scheduled</span>
+        <strong class="hm-summary-value">@appointments.Count(a => a.Status == HospitalManagementApp.Models.AppointmentStatus.Scheduled)</strong>
+        <span class="hm-summary-meta">upcoming confirmed visits</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--violet">
+        <span class="hm-summary-label">Rooms In Use</span>
+        <strong class="hm-summary-value">@appointments.Select(a => a.Room).Distinct().Count()</strong>
+        <span class="hm-summary-meta">active appointment locations</span>
+    </article>
+</section>
+
+<section class="hm-list-section">
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var appt in appointments)
+        {
+            <article class="hm-card hm-record-card hm-record-card--appointment">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@appt.ScheduledAt.ToString("dd MMM yyyy")</span>
+                    <span class="hm-card__badge hm-card__badge--@appt.Status.ToString().ToLower()">@appt.Status</span>
+                </div>
+                <div class="hm-card__body">
+                    <div class="hm-record-card__hero">@appt.ScheduledAt.ToString("HH:mm")</div>
+                    <p class="hm-record-card__title">@(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "Unknown patient")</p>
+                    <p class="hm-record-card__subtitle">@(appt.Doctor != null ? $"Dr. {appt.Doctor.FirstName} {appt.Doctor.LastName}" : "Unassigned doctor")</p>
+                    <div class="hm-record-card__meta">
+                        <span>Room @appt.Room</span>
+                        @if (!string.IsNullOrWhiteSpace(appt.Notes))
+                        {
+                            <span>@appt.Notes</span>
+                        }
+                    </div>
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

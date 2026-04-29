@@ -1,5 +1,6 @@
 @model IEnumerable<HospitalManagementApp.Models.MedicalRecord>
 @{
+    var records = Model.OrderByDescending(r => r.CreatedAt).ToList();
     ViewData["Title"] = "Medical Records";
 }
 
@@ -13,28 +14,48 @@
     </nav>
 </div>
 
-<div class="hm-table-wrap">
-    <table class="hm-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Patient</th>
-                <th>Diagnosis</th>
-                <th>Created</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var record in Model)
-            {
-                <tr>
-                    <td>@record.Id</td>
-                    <td>@(record.Patient != null ? $"{record.Patient.FirstName} {record.Patient.LastName}" : "—")</td>
-                    <td>@record.Diagnosis</td>
-                    <td>@record.CreatedAt.ToString("dd MMM yyyy")</td>
-                    <td><a class="hm-btn-primary" asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@record.Id">Details</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<section class="hm-summary-strip">
+    <article class="hm-summary-card hm-summary-card--accent">
+        <span class="hm-summary-label">Medical Records</span>
+        <strong class="hm-summary-value">@records.Count</strong>
+        <span class="hm-summary-meta">active patient files</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--sky">
+        <span class="hm-summary-label">Prescriptions</span>
+        <strong class="hm-summary-value">@records.Sum(r => r.Prescriptions.Count)</strong>
+        <span class="hm-summary-meta">linked medication plans</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--violet">
+        <span class="hm-summary-label">Recent Records</span>
+        <strong class="hm-summary-value">@records.Count(r => r.CreatedAt >= DateTime.Today.AddDays(-30))</strong>
+        <span class="hm-summary-meta">created in the last 30 days</span>
+    </article>
+</section>
+
+<section class="hm-list-section">
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var record in records)
+        {
+            <article class="hm-card hm-record-card hm-record-card--wide">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">Record #@record.Id</span>
+                    <span class="hm-card__badge hm-card__badge--active">@record.CreatedAt.ToString("dd MMM")</span>
+                </div>
+                <div class="hm-card__body">
+                    <p class="hm-record-card__title">@(record.Patient != null ? $"{record.Patient.FirstName} {record.Patient.LastName}" : "Unknown patient")</p>
+                    <p class="hm-record-card__subtitle">@record.Diagnosis</p>
+                    <div class="hm-record-card__meta">
+                        <span>@record.Prescriptions.Count prescriptions</span>
+                        @if (!string.IsNullOrWhiteSpace(record.Notes))
+                        {
+                            <span>@record.Notes</span>
+                        }
+                    </div>
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@record.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

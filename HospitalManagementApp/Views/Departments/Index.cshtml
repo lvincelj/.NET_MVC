@@ -1,5 +1,6 @@
 @model IEnumerable<HospitalManagementApp.Models.Department>
 @{
+    var departments = Model.OrderBy(d => d.Name).ToList();
     ViewData["Title"] = "Departments";
 }
 
@@ -13,30 +14,45 @@
     </nav>
 </div>
 
-<div class="hm-table-wrap">
-    <table class="hm-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Head</th>
-                <th>Phone</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var dept in Model)
-            {
-                <tr>
-                    <td>@dept.Id</td>
-                    <td>@dept.Name</td>
-                    <td>@dept.Location</td>
-                    <td>@dept.HeadOfDepartment</td>
-                    <td>@dept.PhoneNumber</td>
-                    <td><a class="hm-btn-primary" asp-controller="Departments" asp-action="Details" asp-route-id="@dept.Id">Details</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<section class="hm-summary-strip">
+    <article class="hm-summary-card hm-summary-card--accent">
+        <span class="hm-summary-label">Departments</span>
+        <strong class="hm-summary-value">@departments.Count</strong>
+        <span class="hm-summary-meta">active hospital departments</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--sky">
+        <span class="hm-summary-label">Assigned Doctors</span>
+        <strong class="hm-summary-value">@departments.Sum(d => d.Doctors.Count)</strong>
+        <span class="hm-summary-meta">doctor placements across teams</span>
+    </article>
+    <article class="hm-summary-card hm-summary-card--violet">
+        <span class="hm-summary-label">Leadership</span>
+        <strong class="hm-summary-value">@departments.Count(d => !string.IsNullOrWhiteSpace(d.HeadOfDepartment))</strong>
+        <span class="hm-summary-meta">departments with named heads</span>
+    </article>
+</section>
+
+<section class="hm-list-section">
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var dept in departments)
+        {
+            <article class="hm-card hm-record-card hm-record-card--wide">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@dept.Name</span>
+                    <span class="hm-card__badge hm-card__badge--active">@dept.Doctors.Count doctors</span>
+                </div>
+                <div class="hm-card__body">
+                    <p class="hm-record-card__title">@dept.Location</p>
+                    <p class="hm-record-card__subtitle">Headed by @dept.HeadOfDepartment</p>
+                    <div class="hm-record-card__meta">
+                        <span>@dept.PhoneNumber</span>
+                        <span>@dept.Doctors.Count linked doctors</span>
+                    </div>
+                </div>
+                <div class="hm-card__footer">
+                    <a class="hm-btn-primary" asp-controller="Departments" asp-action="Details" asp-route-id="@dept.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
