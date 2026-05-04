@@ -23,9 +23,9 @@ namespace HospitalManagementApp.Models
         [StringLength(2000)]
         public string? Notes { get; set; }
 
-        public List<Prescription> Prescriptions { get; set; } = new();
+        public virtual ICollection<Prescription> Prescriptions { get; set; } = new HashSet<Prescription>();
 
         [ForeignKey(nameof(PatientId))]
-        public Patient Patient { get; set; } = null!;
+        public virtual Patient Patient { get; set; } = null!;
     }
 }

@@ -7,12 +7,28 @@ namespace HospitalManagementApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly PatientRepository _patientRepository = new();
-        private readonly DoctorRepository _doctorRepository = new();
-        private readonly DepartmentRepository _departmentRepository = new();
-        private readonly AppointmentRepository _appointmentRepository = new();
-        private readonly MedicalRecordRepository _medicalRecordRepository = new();
-        private readonly MedicationRepository _medicationRepository = new();
+        private readonly PatientRepository _patientRepository;
+        private readonly DoctorRepository _doctorRepository;
+        private readonly DepartmentRepository _departmentRepository;
+        private readonly AppointmentRepository _appointmentRepository;
+        private readonly MedicalRecordRepository _medicalRecordRepository;
+        private readonly MedicationRepository _medicationRepository;
+
+        public HomeController(
+            PatientRepository patientRepository,
+            DoctorRepository doctorRepository,
+            DepartmentRepository departmentRepository,
+            AppointmentRepository appointmentRepository,
+            MedicalRecordRepository medicalRecordRepository,
+            MedicationRepository medicationRepository)
+        {
+            _patientRepository = patientRepository;
+            _doctorRepository = doctorRepository;
+            _departmentRepository = departmentRepository;
+            _appointmentRepository = appointmentRepository;
+            _medicalRecordRepository = medicalRecordRepository;
+            _medicationRepository = medicationRepository;
+        }
 
         public IActionResult Index()
         {

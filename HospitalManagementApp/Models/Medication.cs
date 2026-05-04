@@ -23,6 +23,6 @@ namespace HospitalManagementApp.Models
         public int PrescriptionId { get; set; }
 
         [ForeignKey(nameof(PrescriptionId))]
-        public Prescription Prescription { get; set; } = null!;
+        public virtual Prescription Prescription { get; set; } = null!;
     }
 }

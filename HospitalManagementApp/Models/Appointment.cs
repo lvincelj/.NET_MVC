@@ -29,9 +29,9 @@ namespace HospitalManagementApp.Models
         public string? Notes { get; set; }
 
         [ForeignKey(nameof(PatientId))]
-        public Patient Patient { get; set; } = null!;
+        public virtual Patient Patient { get; set; } = null!;
 
         [ForeignKey(nameof(DoctorId))]
-        public Doctor Doctor { get; set; } = null!;
+        public virtual Doctor Doctor { get; set; } = null!;
     }
 }

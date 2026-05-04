@@ -20,9 +20,9 @@ namespace HospitalManagementApp.Models
         [StringLength(120)]
         public string IssuedBy { get; set; } = string.Empty;
 
-        public List<Medication> Medications { get; set; } = new();
+        public virtual ICollection<Medication> Medications { get; set; } = new HashSet<Medication>();
 
         [ForeignKey(nameof(MedicalRecordId))]
-        public MedicalRecord MedicalRecord { get; set; } = null!;
+        public virtual MedicalRecord MedicalRecord { get; set; } = null!;
     }
 }

@@ -34,7 +34,7 @@ namespace HospitalManagementApp.Models
         [StringLength(200)]
         public string? Address { get; set; }
 
-        public List<Appointment> Appointments { get; set; } = new();
-        public List<MedicalRecord> MedicalRecords { get; set; } = new();
+        public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new HashSet<MedicalRecord>();
     }
 }

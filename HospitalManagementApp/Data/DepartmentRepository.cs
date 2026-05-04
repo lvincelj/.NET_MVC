@@ -1,14 +1,25 @@
 using HospitalManagementApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalManagementApp.Data;
 
 public class DepartmentRepository
 {
-    private readonly List<Department> _departments = new()
-    {
-        MockData.DeptCardiology, MockData.DeptNeurology, MockData.DeptGeneralMed
-    };
+    private readonly AppDbContext _context;
 
-    public List<Department> GetAll() => _departments;
-    public Department? GetById(int id) => _departments.FirstOrDefault(d => d.Id == id);
+    public DepartmentRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public List<Department> GetAll() => _context.Departments
+        .AsNoTracking()
+        .Include(d => d.Doctors)
+        .OrderBy(d => d.Name)
+        .ToList();
+
+    public Department? GetById(int id) => _context.Departments
+        .AsNoTracking()
+        .Include(d => d.Doctors)
+        .FirstOrDefault(d => d.Id == id);
 }

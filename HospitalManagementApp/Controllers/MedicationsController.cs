@@ -5,7 +5,12 @@ namespace HospitalManagementApp.Controllers;
 
 public class MedicationsController : Controller
 {
-    private readonly MedicationRepository _repo = new();
+    private readonly MedicationRepository _repo;
+
+    public MedicationsController(MedicationRepository repo)
+    {
+        _repo = repo;
+    }
 
     public IActionResult Index() => View(_repo.GetAll());
 

@@ -23,6 +23,6 @@ namespace HospitalManagementApp.Models
         [StringLength(100)]
         public string? HeadOfDepartment { get; set; }
 
-        public List<Doctor> Doctors { get; set; } = new();
+        public virtual ICollection<Doctor> Doctors { get; set; } = new HashSet<Doctor>();
     }
 }

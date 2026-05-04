@@ -1,14 +1,28 @@
 using HospitalManagementApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalManagementApp.Data;
 
 public class MedicalRecordRepository
 {
-    private readonly List<MedicalRecord> _records = new()
-    {
-        MockData.Mr1, MockData.Mr2, MockData.Mr3
-    };
+    private readonly AppDbContext _context;
 
-    public List<MedicalRecord> GetAll() => _records;
-    public MedicalRecord? GetById(int id) => _records.FirstOrDefault(r => r.Id == id);
+    public MedicalRecordRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public List<MedicalRecord> GetAll() => _context.MedicalRecords
+        .AsNoTracking()
+        .Include(r => r.Patient)
+        .Include(r => r.Prescriptions)
+        .OrderByDescending(r => r.CreatedAt)
+        .ToList();
+
+    public MedicalRecord? GetById(int id) => _context.MedicalRecords
+        .AsNoTracking()
+        .Include(r => r.Patient)
+        .Include(r => r.Prescriptions)
+            .ThenInclude(p => p.Medications)
+        .FirstOrDefault(r => r.Id == id);
 }

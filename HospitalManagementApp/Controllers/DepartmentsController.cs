@@ -5,7 +5,12 @@ namespace HospitalManagementApp.Controllers;
 
 public class DepartmentsController : Controller
 {
-    private readonly DepartmentRepository _repo = new();
+    private readonly DepartmentRepository _repo;
+
+    public DepartmentsController(DepartmentRepository repo)
+    {
+        _repo = repo;
+    }
 
     public IActionResult Index() => View(_repo.GetAll());
 
