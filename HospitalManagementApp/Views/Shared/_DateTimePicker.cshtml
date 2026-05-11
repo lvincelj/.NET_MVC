@@ -1,0 +1,78 @@
+@model DateTime?
+@{
+    var dateOnly = (bool?)ViewData["DateOnly"] ?? false;
+    var fieldName = (string?)ViewData["FieldName"] ?? string.Empty;
+    var fieldId = fieldName.Replace(".", "_").Replace("[", "_").Replace("]", "_");
+    var dateInputId = $"{fieldId}_date";
+    var timeInputId = $"{fieldId}_time";
+    var label = (string?)ViewData["FieldLabel"] ?? fieldName;
+
+    var modelStateEntry = ViewData.ModelState.TryGetValue(fieldName, out var stateEntry) ? stateEntry : null;
+    var attemptedValue = modelStateEntry?.AttemptedValue;
+
+    DateTime? resolved = null;
+    if (!string.IsNullOrWhiteSpace(attemptedValue) && DateTime.TryParse(attemptedValue, out var parsedAttempt))
+    {
+        resolved = parsedAttempt;
+    }
+    else
+    {
+        resolved = Model;
+    }
+
+    var hiddenValue = dateOnly ? resolved?.ToString("yyyy-MM-dd") ?? string.Empty : resolved?.ToString("yyyy-MM-ddTHH:mm") ?? string.Empty;
+    var dateValue = resolved?.ToString("yyyy-MM-dd") ?? string.Empty;
+    var timeValue = resolved?.ToString("HH:mm") ?? string.Empty;
+}
+
+<div class="mb-3 hm-dtp" data-dtp="true" data-date-only="@dateOnly.ToString().ToLowerInvariant()">
+    <label class="form-label" for="@dateInputId">@label</label>
+
+    <input type="hidden" name="@fieldName" id="@fieldId" class="hm-dtp__value" value="@hiddenValue" />
+
+    <button id="@dateInputId" type="button" class="form-control hm-dtp__trigger" aria-haspopup="dialog" aria-expanded="false">
+        <span class="hm-dtp__trigger-value" data-dtp-trigger-value="true"></span>
+        <span class="hm-dtp__trigger-icon" aria-hidden="true">+</span>
+    </button>
+
+    <div class="hm-dtp__panel" data-dtp-panel="true" role="dialog" aria-modal="false" aria-label="@label picker">
+        <div class="hm-dtp__panel-header">
+            <button type="button" class="hm-dtp__nav" data-dtp-nav="prev" aria-label="Previous month">&lsaquo;</button>
+            <div class="hm-dtp__month" data-dtp-month="true"></div>
+            <button type="button" class="hm-dtp__nav" data-dtp-nav="next" aria-label="Next month">&rsaquo;</button>
+        </div>
+
+        <div class="hm-dtp__weekdays" data-dtp-weekdays="true"></div>
+        <div class="hm-dtp__calendar" data-dtp-calendar="true"></div>
+
+        @if (!dateOnly)
+        {
+            <div class="hm-dtp__time-wrap">
+                <div class="hm-dtp__time-group">
+                    <label class="hm-dtp__time-label" for="@timeInputId">Time</label>
+                    <div class="hm-dtp__time-controls">
+                        <select id="@timeInputId" class="form-select hm-dtp__hour" data-dtp-hour="true"></select>
+                        <span class="hm-dtp__time-sep">:</span>
+                        <select class="form-select hm-dtp__minute" data-dtp-minute="true"></select>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="hm-dtp__meta">
+        <small class="hm-dtp__hint" data-dtp-hint="true"></small>
+        <small class="hm-dtp__preview" data-dtp-preview="true"></small>
+    </div>
+
+    <div class="hm-dtp__quick" aria-label="Quick date controls">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-dtp-action="today">Today</button>
+        @if (!dateOnly)
+        {
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-dtp-action="now">Now</button>
+        }
+        <button type="button" class="btn btn-sm btn-outline-danger" data-dtp-action="clear">Clear</button>
+    </div>
+
+    <span class="text-danger field-validation-valid" data-valmsg-for="@fieldName" data-valmsg-replace="true"></span>
+</div>

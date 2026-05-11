@@ -19,7 +19,7 @@ namespace HospitalManagementApp.Models
         [StringLength(1000)]
         public string? Instructions { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a prescription.")]
         public int PrescriptionId { get; set; }
 
         [ForeignKey(nameof(PrescriptionId))]

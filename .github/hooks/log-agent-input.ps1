@@ -1,11 +1,14 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string]$EventName
+    [string]$EventName,
+
+    [Parameter(Mandatory = $false)]
+    [string]$LogPath = "lab-4\agent_log.txt"
 )
 
 $ErrorActionPreference = "Stop"
 
-$logPath = "C:\Users\Luka Vincelj\Desktop\.NET_MVC\lab-3\agent_log.txt"
+$logPath = [System.IO.Path]::GetFullPath($LogPath)
 $logDir = Split-Path -Parent $logPath
 
 if (-not (Test-Path -Path $logDir)) {

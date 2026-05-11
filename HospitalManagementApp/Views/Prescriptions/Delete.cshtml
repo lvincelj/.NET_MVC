@@ -1,0 +1,39 @@
+@model HospitalManagementApp.Models.Prescription
+@{
+    ViewData["Title"] = "Delete Prescription";
+    var canDelete = ViewBag.CanDelete is bool b && b;
+}
+
+<h1>Delete Prescription</h1>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">ID</dt>
+    <dd class="col-sm-9">@Model.Id</dd>
+    <dt class="col-sm-3">Issued By</dt>
+    <dd class="col-sm-9">@Model.IssuedBy</dd>
+    <dt class="col-sm-3">Issued At</dt>
+    <dd class="col-sm-9">@Model.IssuedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    <dt class="col-sm-3">Medications</dt>
+    <dd class="col-sm-9">@Model.Medications.Count</dd>
+</dl>
+
+@if (!canDelete)
+{
+    <div class="alert alert-warning">This prescription cannot be deleted while medications reference it.</div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
+}
+else
+{
+    <p class="text-danger">Are you sure you want to delete this prescription?</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+    </form>
+}

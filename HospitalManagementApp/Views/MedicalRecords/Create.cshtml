@@ -1,0 +1,42 @@
+@model HospitalManagementApp.Models.MedicalRecord
+@{
+    ViewData["Title"] = "Create Medical Record";
+}
+
+<h1>Create Medical Record</h1>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="PatientId" class="form-label"></label>
+        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "Patients")">
+            <input asp-for="PatientId" type="hidden" />
+            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedPatientText" placeholder="Search patient..." autocomplete="off" />
+            <div class="hm-ajax-dropdown__menu"></div>
+        </div>
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+
+    <partial name="_DateTimePicker" model="Model.CreatedAt" view-data='new ViewDataDictionary(ViewData) { ["FieldName"] = nameof(Model.CreatedAt), ["FieldLabel"] = "Created At" }' />
+
+    <div class="mb-3">
+        <label asp-for="Diagnosis" class="form-label"></label>
+        <input asp-for="Diagnosis" class="form-control" />
+        <span asp-validation-for="Diagnosis" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

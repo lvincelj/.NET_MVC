@@ -1,0 +1,30 @@
+@model IEnumerable<HospitalManagementApp.Models.Prescription>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info hm-empty-state">No prescriptions found.</div>
+}
+else
+{
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var item in Model)
+        {
+            <article class="hm-card hm-record-card hm-record-card--wide">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">Prescription #@item.Id</span>
+                    <span class="hm-card__badge hm-card__badge--active">@item.Medications.Count Medications</span>
+                </div>
+                <div class="hm-card__body">
+                    <p><strong>Patient:</strong> @(item.MedicalRecord?.Patient != null ? item.MedicalRecord.Patient.FirstName + " " + item.MedicalRecord.Patient.LastName : "-")</p>
+                    <p><strong>Issued By:</strong> @item.IssuedBy</p>
+                    <p><strong>Issued At:</strong> @item.IssuedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                </div>
+                <div class="hm-card__footer hm-action-strip">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </article>
+        }
+    </div>
+}

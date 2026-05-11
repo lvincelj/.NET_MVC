@@ -16,6 +16,11 @@
 
 <a class="hm-back-link" asp-controller="Doctors" asp-action="Index">‹ Back to Doctors</a>
 
+<div class="mb-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
+</div>
+
 <div class="hm-detail-card">
     <div class="hm-detail-card__header">Doctor Details</div>
     <div class="hm-detail-card__body">

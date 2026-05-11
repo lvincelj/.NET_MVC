@@ -1,57 +1,23 @@
 @model IEnumerable<HospitalManagementApp.Models.Medication>
 @{
-    var medications = Model.OrderBy(m => m.Name).ToList();
     ViewData["Title"] = "Medications";
 }
 
-<div class="hm-page-header">
-    <h1 class="hm-page-title">Medications</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb hm-breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Medications</li>
-        </ol>
-    </nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Medications</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Medication</a>
 </div>
 
-<section class="hm-summary-strip">
-    <article class="hm-summary-card hm-summary-card--accent">
-        <span class="hm-summary-label">Medications</span>
-        <strong class="hm-summary-value">@medications.Count</strong>
-        <span class="hm-summary-meta">entries in the catalog</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--sky">
-        <span class="hm-summary-label">Dosage Variants</span>
-        <strong class="hm-summary-value">@medications.Select(m => m.Dosage).Distinct().Count()</strong>
-        <span class="hm-summary-meta">unique dosage configurations</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--violet">
-        <span class="hm-summary-label">Linked Prescriptions</span>
-        <strong class="hm-summary-value">@medications.Select(m => m.PrescriptionId).Distinct().Count()</strong>
-        <span class="hm-summary-meta">prescriptions referencing medications</span>
-    </article>
-</section>
+<div class="mb-3">
+    <input
+        type="search"
+        class="form-control"
+        placeholder="Search by medication name, dosage, or instructions..."
+        data-ajax-search="true"
+        data-search-url="@Url.Action("Search", "Medications")"
+        data-search-target="#medication-list" />
+</div>
 
-<section class="hm-list-section">
-    <div class="hm-cards-grid hm-cards-grid--index">
-        @foreach (var med in medications)
-        {
-            <article class="hm-card hm-record-card">
-                <div class="hm-card__header">
-                    <span class="hm-card__title">@med.Name</span>
-                    <span class="hm-card__badge hm-card__badge--active">@med.Dosage</span>
-                </div>
-                <div class="hm-card__body">
-                    <p class="hm-record-card__title">Medication #@med.Id</p>
-                    <p class="hm-record-card__subtitle">Prescription reference #@med.PrescriptionId</p>
-                    <div class="hm-record-card__meta">
-                        <span>@med.Instructions</span>
-                    </div>
-                </div>
-                <div class="hm-card__footer">
-                    <a class="hm-btn-primary" asp-controller="Medications" asp-action="Details" asp-route-id="@med.Id">Details</a>
-                </div>
-            </article>
-        }
-    </div>
-</section>
+<div id="medication-list">
+    @await Html.PartialAsync("_MedicationList", Model)
+</div>

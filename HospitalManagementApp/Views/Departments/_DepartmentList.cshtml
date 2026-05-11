@@ -1,0 +1,30 @@
+@model IEnumerable<HospitalManagementApp.Models.Department>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info hm-empty-state">No departments found.</div>
+}
+else
+{
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var item in Model)
+        {
+            <article class="hm-card hm-record-card hm-record-card--wide">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@item.Name</span>
+                    <span class="hm-card__badge hm-card__badge--active">@item.Doctors.Count Doctors</span>
+                </div>
+                <div class="hm-card__body">
+                    <p><strong>Location:</strong> @item.Location</p>
+                    <p><strong>Head:</strong> @(string.IsNullOrWhiteSpace(item.HeadOfDepartment) ? "-" : item.HeadOfDepartment)</p>
+                    <p><strong>Phone:</strong> @(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</p>
+                </div>
+                <div class="hm-card__footer hm-action-strip">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </article>
+        }
+    </div>
+}

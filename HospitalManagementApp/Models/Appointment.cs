@@ -9,10 +9,10 @@ namespace HospitalManagementApp.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a patient.")]
         public int PatientId { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a doctor.")]
         public int DoctorId { get; set; }
 
         [Required]

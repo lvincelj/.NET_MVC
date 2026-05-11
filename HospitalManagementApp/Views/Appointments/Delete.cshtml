@@ -1,0 +1,25 @@
+@model HospitalManagementApp.Models.Appointment
+@{
+    ViewData["Title"] = "Delete Appointment";
+}
+
+<h1>Delete Appointment</h1>
+<p class="text-danger">Are you sure you want to delete this appointment?</p>
+
+<dl class="row">
+    <dt class="col-sm-3">Date & Time</dt>
+    <dd class="col-sm-9">@Model.ScheduledAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    <dt class="col-sm-3">Patient</dt>
+    <dd class="col-sm-9">@(Model.Patient != null ? Model.Patient.FirstName + " " + Model.Patient.LastName : "-")</dd>
+    <dt class="col-sm-3">Doctor</dt>
+    <dd class="col-sm-9">@(Model.Doctor != null ? "Dr. " + Model.Doctor.FirstName + " " + Model.Doctor.LastName : "-")</dd>
+    <dt class="col-sm-3">Room</dt>
+    <dd class="col-sm-9">@Model.Room</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+</form>

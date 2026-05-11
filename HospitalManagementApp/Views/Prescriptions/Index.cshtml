@@ -1,57 +1,23 @@
 @model IEnumerable<HospitalManagementApp.Models.Prescription>
 @{
-    var prescriptions = Model.OrderByDescending(p => p.IssuedAt).ToList();
     ViewData["Title"] = "Prescriptions";
 }
 
-<div class="hm-page-header">
-    <h1 class="hm-page-title">Prescriptions</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb hm-breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Prescriptions</li>
-        </ol>
-    </nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Prescriptions</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Prescription</a>
 </div>
 
-<section class="hm-summary-strip">
-    <article class="hm-summary-card hm-summary-card--accent">
-        <span class="hm-summary-label">Prescriptions</span>
-        <strong class="hm-summary-value">@prescriptions.Count</strong>
-        <span class="hm-summary-meta">issued medication plans</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--sky">
-        <span class="hm-summary-label">Medications</span>
-        <strong class="hm-summary-value">@prescriptions.Sum(p => p.Medications.Count)</strong>
-        <span class="hm-summary-meta">items prescribed across records</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--violet">
-        <span class="hm-summary-label">Issued This Week</span>
-        <strong class="hm-summary-value">@prescriptions.Count(p => p.IssuedAt >= DateTime.Today.AddDays(-7))</strong>
-        <span class="hm-summary-meta">recent prescription activity</span>
-    </article>
-</section>
+<div class="mb-3">
+    <input
+        type="search"
+        class="form-control"
+        placeholder="Search by patient, diagnosis, or issuing doctor..."
+        data-ajax-search="true"
+        data-search-url="@Url.Action("Search", "Prescriptions")"
+        data-search-target="#prescription-list" />
+</div>
 
-<section class="hm-list-section">
-    <div class="hm-cards-grid hm-cards-grid--index">
-        @foreach (var prescription in prescriptions)
-        {
-            <article class="hm-card hm-record-card">
-                <div class="hm-card__header">
-                    <span class="hm-card__title">Prescription #@prescription.Id</span>
-                    <span class="hm-card__badge hm-card__badge--active">@prescription.Medications.Count meds</span>
-                </div>
-                <div class="hm-card__body">
-                    <p class="hm-record-card__title">@(prescription.MedicalRecord?.Patient != null ? $"{prescription.MedicalRecord.Patient.FirstName} {prescription.MedicalRecord.Patient.LastName}" : "Unknown patient")</p>
-                    <p class="hm-record-card__subtitle">Issued by @prescription.IssuedBy on @prescription.IssuedAt.ToString("dd MMM yyyy")</p>
-                    <div class="hm-record-card__meta">
-                        <span>Record #@prescription.MedicalRecordId</span>
-                    </div>
-                </div>
-                <div class="hm-card__footer">
-                    <a class="hm-btn-primary" asp-controller="Prescriptions" asp-action="Details" asp-route-id="@prescription.Id">Details</a>
-                </div>
-            </article>
-        }
-    </div>
-</section>
+<div id="prescription-list">
+    @await Html.PartialAsync("_PrescriptionList", Model)
+</div>

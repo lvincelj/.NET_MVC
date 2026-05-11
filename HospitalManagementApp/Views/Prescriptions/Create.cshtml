@@ -1,0 +1,36 @@
+@model HospitalManagementApp.Models.Prescription
+@{
+    ViewData["Title"] = "Create Prescription";
+}
+
+<h1>Create Prescription</h1>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="MedicalRecordId" class="form-label"></label>
+        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "MedicalRecords")">
+            <input asp-for="MedicalRecordId" type="hidden" />
+            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedMedicalRecordText" placeholder="Search medical record..." autocomplete="off" />
+            <div class="hm-ajax-dropdown__menu"></div>
+        </div>
+        <span asp-validation-for="MedicalRecordId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="IssuedBy" class="form-label"></label>
+        <input asp-for="IssuedBy" class="form-control" />
+        <span asp-validation-for="IssuedBy" class="text-danger"></span>
+    </div>
+
+    <partial name="_DateTimePicker" model="Model.IssuedAt" view-data='new ViewDataDictionary(ViewData) { ["FieldName"] = nameof(Model.IssuedAt), ["FieldLabel"] = "Issued At" }' />
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

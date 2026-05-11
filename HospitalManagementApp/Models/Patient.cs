@@ -17,7 +17,7 @@ namespace HospitalManagementApp.Models
         [StringLength(100)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a gender.")]
         public Gender Gender { get; set; }
 
         [Required]

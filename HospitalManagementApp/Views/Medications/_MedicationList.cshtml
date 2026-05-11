@@ -1,0 +1,29 @@
+@model IEnumerable<HospitalManagementApp.Models.Medication>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info hm-empty-state">No medications found.</div>
+}
+else
+{
+    <div class="hm-cards-grid hm-cards-grid--index">
+        @foreach (var item in Model)
+        {
+            <article class="hm-card hm-record-card">
+                <div class="hm-card__header">
+                    <span class="hm-card__title">@item.Name</span>
+                    <span class="hm-card__badge hm-card__badge--active">@item.Dosage</span>
+                </div>
+                <div class="hm-card__body">
+                    <p><strong>Prescription:</strong> #@item.PrescriptionId</p>
+                    <p><strong>Instructions:</strong> @(string.IsNullOrWhiteSpace(item.Instructions) ? "-" : item.Instructions)</p>
+                </div>
+                <div class="hm-card__footer hm-action-strip">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </article>
+        }
+    </div>
+}

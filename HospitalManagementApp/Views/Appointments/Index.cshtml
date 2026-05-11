@@ -1,62 +1,23 @@
 @model IEnumerable<HospitalManagementApp.Models.Appointment>
 @{
-    var appointments = Model.OrderBy(a => a.ScheduledAt).ToList();
     ViewData["Title"] = "Appointments";
 }
 
-<div class="hm-page-header">
-    <h1 class="hm-page-title">Appointments</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb hm-breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Appointments</li>
-        </ol>
-    </nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Appointments</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Appointment</a>
 </div>
 
-<section class="hm-summary-strip">
-    <article class="hm-summary-card hm-summary-card--accent">
-        <span class="hm-summary-label">Total Appointments</span>
-        <strong class="hm-summary-value">@appointments.Count</strong>
-        <span class="hm-summary-meta">scheduled visits in the system</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--sky">
-        <span class="hm-summary-label">Scheduled</span>
-        <strong class="hm-summary-value">@appointments.Count(a => a.Status == HospitalManagementApp.Models.AppointmentStatus.Scheduled)</strong>
-        <span class="hm-summary-meta">upcoming confirmed visits</span>
-    </article>
-    <article class="hm-summary-card hm-summary-card--violet">
-        <span class="hm-summary-label">Rooms In Use</span>
-        <strong class="hm-summary-value">@appointments.Select(a => a.Room).Distinct().Count()</strong>
-        <span class="hm-summary-meta">active appointment locations</span>
-    </article>
-</section>
+<div class="mb-3">
+    <input
+        type="search"
+        class="form-control"
+        placeholder="Search by patient, doctor, room, or status..."
+        data-ajax-search="true"
+        data-search-url="@Url.Action("Search", "Appointments")"
+        data-search-target="#appointment-list" />
+</div>
 
-<section class="hm-list-section">
-    <div class="hm-cards-grid hm-cards-grid--index">
-        @foreach (var appt in appointments)
-        {
-            <article class="hm-card hm-record-card hm-record-card--appointment">
-                <div class="hm-card__header">
-                    <span class="hm-card__title">@appt.ScheduledAt.ToString("dd MMM yyyy")</span>
-                    <span class="hm-card__badge hm-card__badge--@appt.Status.ToString().ToLower()">@appt.Status</span>
-                </div>
-                <div class="hm-card__body">
-                    <div class="hm-record-card__hero">@appt.ScheduledAt.ToString("HH:mm")</div>
-                    <p class="hm-record-card__title">@(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "Unknown patient")</p>
-                    <p class="hm-record-card__subtitle">@(appt.Doctor != null ? $"Dr. {appt.Doctor.FirstName} {appt.Doctor.LastName}" : "Unassigned doctor")</p>
-                    <div class="hm-record-card__meta">
-                        <span>Room @appt.Room</span>
-                        @if (!string.IsNullOrWhiteSpace(appt.Notes))
-                        {
-                            <span>@appt.Notes</span>
-                        }
-                    </div>
-                </div>
-                <div class="hm-card__footer">
-                    <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id">Details</a>
-                </div>
-            </article>
-        }
-    </div>
-</section>
+<div id="appointment-list">
+    @await Html.PartialAsync("_AppointmentList", Model)
+</div>

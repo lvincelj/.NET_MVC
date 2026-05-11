@@ -1,0 +1,59 @@
+@model HospitalManagementApp.Models.Appointment
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<h1>Edit Appointment</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="PatientId" class="form-label"></label>
+        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "Patients")">
+            <input asp-for="PatientId" type="hidden" />
+            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedPatientText" placeholder="Search patient..." autocomplete="off" />
+            <div class="hm-ajax-dropdown__menu"></div>
+        </div>
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DoctorId" class="form-label"></label>
+        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "Doctors")">
+            <input asp-for="DoctorId" type="hidden" />
+            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedDoctorText" placeholder="Search doctor..." autocomplete="off" />
+            <div class="hm-ajax-dropdown__menu"></div>
+        </div>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+
+    <partial name="_DateTimePicker" model="Model.ScheduledAt" view-data='new ViewDataDictionary(ViewData) { ["FieldName"] = nameof(Model.ScheduledAt), ["FieldLabel"] = "Scheduled At" }' />
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<HospitalManagementApp.Models.AppointmentStatus>()" class="form-select"></select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Room" class="form-label"></label>
+        <input asp-for="Room" class="form-control" />
+        <span asp-validation-for="Room" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

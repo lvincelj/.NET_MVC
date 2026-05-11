@@ -1,0 +1,39 @@
+@model HospitalManagementApp.Models.Doctor
+@{
+    ViewData["Title"] = "Delete Doctor";
+    var canDelete = ViewBag.CanDelete is bool b && b;
+}
+
+<h1>Delete Doctor</h1>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">Dr. @Model.FirstName @Model.LastName</dd>
+    <dt class="col-sm-3">Specialty</dt>
+    <dd class="col-sm-9">@Model.Specialty</dd>
+    <dt class="col-sm-3">Departments</dt>
+    <dd class="col-sm-9">@Model.Departments.Count</dd>
+    <dt class="col-sm-3">Appointments</dt>
+    <dd class="col-sm-9">@Model.Appointments.Count</dd>
+</dl>
+
+@if (!canDelete)
+{
+    <div class="alert alert-warning">This doctor cannot be deleted while assigned to departments or appointments.</div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
+}
+else
+{
+    <p class="text-danger">Are you sure you want to delete this doctor?</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+    </form>
+}

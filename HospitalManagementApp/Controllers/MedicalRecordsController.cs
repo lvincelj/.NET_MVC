@@ -1,4 +1,6 @@
 using HospitalManagementApp.Data;
+using HospitalManagementApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalManagementApp.Controllers;
@@ -13,7 +15,24 @@ public class MedicalRecordsController : Controller
     }
 
     [HttpGet("/medical-records")]
-    public IActionResult Index() => View(_repo.GetAll());
+    public IActionResult Index(string? term) => View(_repo.GetAll(term));
+
+    [HttpGet]
+    public IActionResult Search(string? term) => PartialView("_MedicalRecordList", _repo.GetAll(term));
+
+    [HttpGet("/medical-records/options")]
+    public IActionResult Options(string? term)
+    {
+        var options = _repo.GetAll(term)
+            .Take(20)
+            .Select(r => new
+            {
+                value = r.Id,
+                label = "Record #" + r.Id + " - " + r.Diagnosis
+            });
+
+        return Json(options);
+    }
 
     [HttpGet("/medical-records/{id:int}")]
     public IActionResult Details(int id)
@@ -32,5 +51,84 @@ public class MedicalRecordsController : Controller
 
         TempData["StatusMessage"] = $"Medical record {id} marked as reviewed.";
         return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        LoadPatientSelection();
+        return View(new MedicalRecord { CreatedAt = DateTime.Now });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(MedicalRecord record)
+    {
+        if (!ModelState.IsValid)
+        {
+            LoadPatientSelection(record.PatientId);
+            return View(record);
+        }
+
+        _repo.Add(record);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var record = _repo.GetByIdForEdit(id);
+        if (record == null) return NotFound();
+
+        LoadPatientSelection(record.PatientId);
+        return View(record);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, MedicalRecord record)
+    {
+        if (id != record.Id) return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            LoadPatientSelection(record.PatientId);
+            return View(record);
+        }
+
+        if (!_repo.Update(record)) return NotFound();
+        return RedirectToAction(nameof(Details), new { id = record.Id });
+    }
+
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+        var record = _repo.GetById(id);
+        if (record == null) return NotFound();
+        ViewBag.CanDelete = _repo.CanDelete(id);
+        return View(record);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        if (!_repo.Delete(id))
+        {
+            TempData["Error"] = "Medical record cannot be deleted while prescriptions exist.";
+            return RedirectToAction(nameof(Delete), new { id });
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    private void LoadPatientSelection(int? selectedPatientId = null)
+    {
+        var patients = _repo.GetPatientsForSelection()
+            .Select(p => new { p.Id, FullName = p.LastName + ", " + p.FirstName })
+            .ToList();
+
+        ViewBag.PatientId = new SelectList(patients, "Id", "FullName", selectedPatientId);
+        ViewBag.SelectedPatientText = patients.FirstOrDefault(p => p.Id == selectedPatientId)?.FullName ?? string.Empty;
     }
 }
