@@ -23,6 +23,7 @@ public class AppointmentsController : Controller
     [HttpGet]
     public IActionResult Search(string? term) => PartialView("_AppointmentList", _repo.GetAll(term));
 
+    [HttpGet("/Appointments/Details/{id:int}")]
     [HttpGet("/schedule/appointments/{id:int}")]
     public IActionResult Details(int id)
     {

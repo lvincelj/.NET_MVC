@@ -14,14 +14,14 @@ public class DoctorsController : Controller
         _repo = repo;
     }
 
+    [HttpGet("/Doctors")]
     [Route("/staff/doctors")]
-    [HttpGet]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
     public IActionResult Search(string? term) => PartialView("_DoctorList", _repo.GetAll(term));
 
-    [HttpGet("/doctors/options")]
+    [HttpGet("/Doctors/Options")]
     public IActionResult Options(string? term)
     {
         var options = _repo.GetAll(term)

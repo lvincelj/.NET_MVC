@@ -14,12 +14,14 @@ public class MedicalRecordsController : Controller
         _repo = repo;
     }
 
+    [HttpGet("/MedicalRecords")]
     [HttpGet("/medical-records")]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
     public IActionResult Search(string? term) => PartialView("_MedicalRecordList", _repo.GetAll(term));
 
+    [HttpGet("/MedicalRecords/Options")]
     [HttpGet("/medical-records/options")]
     public IActionResult Options(string? term)
     {
@@ -34,6 +36,7 @@ public class MedicalRecordsController : Controller
         return Json(options);
     }
 
+    [HttpGet("/MedicalRecords/Details/{id:int}")]
     [HttpGet("/medical-records/{id:int}")]
     public IActionResult Details(int id)
     {
