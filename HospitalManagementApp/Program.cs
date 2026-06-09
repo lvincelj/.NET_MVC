@@ -71,6 +71,7 @@ builder.Services.AddScoped<PrescriptionRepository>();
 var app = builder.Build();
 
 await IdentitySeed.SeedRolesAndAdminAsync(app.Services);
+await AppDataSeed.SeedDemoDataAsync(app.Services);
 
 // Standard ASP.NET Core Middleware
 if (!app.Environment.IsDevelopment())
