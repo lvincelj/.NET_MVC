@@ -8,11 +8,35 @@
     ".NETCoreApp,Version=v10.0": {
       "HospitalManagementApp/1.0.0": {
         "dependencies": {
+          "AutoMapper": "12.0.1",
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "Microsoft.AspNetCore.Authentication.Facebook": "10.0.0-preview.4.25258.110",
+          "Microsoft.AspNetCore.Authentication.Google": "10.0.0-preview.4.25258.110",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "10.0.0-preview.4.25258.110",
           "Microsoft.EntityFrameworkCore.Design": "10.0.0-preview.4.25258.110",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.0-preview.4.25258.110"
         },
         "runtime": {
           "HospitalManagementApp.dll": {}
+        }
+      },
+      "AutoMapper/12.0.1": {
+        "runtime": {
+          "lib/netstandard2.1/AutoMapper.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.1.0"
+          }
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
+        "dependencies": {
+          "AutoMapper": "12.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.1.0"
+          }
         }
       },
       "Azure.Core/1.38.0": {
@@ -47,6 +71,33 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Facebook/10.0.0-preview.4.25258.110": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.25910"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/10.0.0-preview.4.25258.110": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.25910"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore/10.0.0-preview.4.25258.110": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.0-preview.4.25258.110"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.25910"
           }
         }
       },
@@ -870,6 +921,20 @@
       "serviceable": false,
       "sha512": ""
     },
+    "AutoMapper/12.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hvV62vl6Hp/WfQ24yzo3Co9+OPl8wH8hApwVtgWpiAynVJkUcs7xvehnSftawL8Pe8FrPffBRM3hwzLQqWDNjA==",
+      "path": "automapper/12.0.1",
+      "hashPath": "automapper.12.0.1.nupkg.sha512"
+    },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+g/K+Vpe3gGMKGzjslMOdqNlkikScDjWfVvmWTayrDHaG/n2pPmFBMa+jKX1r/h6BDGFdkyRjAuhFE3ykW+r1g==",
+      "path": "automapper.extensions.microsoft.dependencyinjection/12.0.1",
+      "hashPath": "automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512"
+    },
     "Azure.Core/1.38.0": {
       "type": "package",
       "serviceable": true,
@@ -890,6 +955,27 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Facebook/10.0.0-preview.4.25258.110": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2al0wwU1EZAOHK+C4URrmMfw371aO4sXogdtiVbHQ1mhICp5Lgn0rv30UMQ33glnTUcd8/JMpyxNejaqZVMTRA==",
+      "path": "microsoft.aspnetcore.authentication.facebook/10.0.0-preview.4.25258.110",
+      "hashPath": "microsoft.aspnetcore.authentication.facebook.10.0.0-preview.4.25258.110.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/10.0.0-preview.4.25258.110": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/FPnAexBpXSycBtNzNrfSrEtHKMUV6e1/DM2uv3oiPsGESZm1WQMTQHdj6hzdCRAyog9gi8WXT1QD2XrLBGweQ==",
+      "path": "microsoft.aspnetcore.authentication.google/10.0.0-preview.4.25258.110",
+      "hashPath": "microsoft.aspnetcore.authentication.google.10.0.0-preview.4.25258.110.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore/10.0.0-preview.4.25258.110": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8GK4EXcHSVpFFNI/58fmAjCYQKnJbbMZ/NdKuFCcrAnKw1mWnc3oZCl2NJneh65rgwD8wKHabfnR74aHwVmZXA==",
+      "path": "microsoft.aspnetcore.identity.entityframeworkcore/10.0.0-preview.4.25258.110",
+      "hashPath": "microsoft.aspnetcore.identity.entityframeworkcore.10.0.0-preview.4.25258.110.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
       "type": "package",

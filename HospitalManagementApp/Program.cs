@@ -31,16 +31,33 @@ builder.Services
 
 var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
 var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+var facebookAppId = builder.Configuration["Authentication:Facebook:AppId"];
+var facebookAppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
 
-if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+var hasGoogle = !string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret);
+var hasFacebook = !string.IsNullOrWhiteSpace(facebookAppId) && !string.IsNullOrWhiteSpace(facebookAppSecret);
+
+if (hasGoogle || hasFacebook)
 {
-    builder.Services
-        .AddAuthentication()
-        .AddGoogle(options =>
+    var authenticationBuilder = builder.Services.AddAuthentication();
+
+    if (hasGoogle)
+    {
+        authenticationBuilder.AddGoogle(options =>
         {
-            options.ClientId = googleClientId;
-            options.ClientSecret = googleClientSecret;
+            options.ClientId = googleClientId!;
+            options.ClientSecret = googleClientSecret!;
         });
+    }
+
+    if (hasFacebook)
+    {
+        authenticationBuilder.AddFacebook(options =>
+        {
+            options.AppId = facebookAppId!;
+            options.AppSecret = facebookAppSecret!;
+        });
+    }
 }
 
 builder.Services.AddScoped<AppointmentRepository>();

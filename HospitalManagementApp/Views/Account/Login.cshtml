@@ -5,7 +5,10 @@
     var returnUrl = ViewData["ReturnUrl"] as string;
     var googleClientId = Configuration["Authentication:Google:ClientId"];
     var googleClientSecret = Configuration["Authentication:Google:ClientSecret"];
+    var facebookAppId = Configuration["Authentication:Facebook:AppId"];
+    var facebookAppSecret = Configuration["Authentication:Facebook:AppSecret"];
     var isGoogleConfigured = !string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret);
+    var isFacebookConfigured = !string.IsNullOrWhiteSpace(facebookAppId) && !string.IsNullOrWhiteSpace(facebookAppSecret);
 }
 
 <div class="container py-4" style="max-width: 520px;">
@@ -38,15 +41,29 @@
         </div>
     </form>
 
-    @if (isGoogleConfigured)
+    @if (isGoogleConfigured || isFacebookConfigured)
     {
         <hr class="my-4" />
 
-        <form asp-action="ExternalLogin" method="post">
-            <input type="hidden" name="provider" value="Google" />
-            <input type="hidden" name="returnUrl" value="@returnUrl" />
-            <button type="submit" class="btn btn-outline-danger w-100">Continue with Google</button>
-        </form>
+        <div class="d-grid gap-2">
+            @if (isGoogleConfigured)
+            {
+                <form asp-action="ExternalLogin" method="post">
+                    <input type="hidden" name="provider" value="Google" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn btn-outline-danger w-100">Continue with Google</button>
+                </form>
+            }
+
+            @if (isFacebookConfigured)
+            {
+                <form asp-action="ExternalLogin" method="post">
+                    <input type="hidden" name="provider" value="Facebook" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn btn-outline-primary w-100">Continue with Facebook</button>
+                </form>
+            }
+        </div>
     }
 </div>
 
