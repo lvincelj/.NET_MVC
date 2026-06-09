@@ -1,11 +1,15 @@
 @model IEnumerable<HospitalManagementApp.Models.Medication>
 @{
     ViewData["Title"] = "Medications";
+    var canManage = User.IsInRole("Admin") || User.IsInRole("Doctor");
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="mb-0">Medications</h1>
-    <a asp-action="Create" class="btn btn-primary">Create Medication</a>
+    @if (canManage)
+    {
+        <a asp-action="Create" class="btn btn-primary">Create Medication</a>
+    }
 </div>
 
 <div class="mb-3">

@@ -1,5 +1,7 @@
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +16,15 @@ public class PrescriptionsController : Controller
         _repo = repo;
     }
 
+    [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_PrescriptionList", _repo.GetAll(term));
 
     [HttpGet("/prescriptions/options")]
+    [AllowAnonymous]
     public IActionResult Options(string? term)
     {
         var options = _repo.GetAll(term)
@@ -33,6 +38,7 @@ public class PrescriptionsController : Controller
         return Json(options);
     }
 
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var prescription = _repo.GetById(id);
@@ -41,6 +47,7 @@ public class PrescriptionsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
         LoadMedicalRecordSelection();
@@ -49,6 +56,7 @@ public class PrescriptionsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Prescription prescription)
     {
         if (!ModelState.IsValid)
@@ -62,6 +70,7 @@ public class PrescriptionsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
         var prescription = _repo.GetByIdForEdit(id);
@@ -73,6 +82,7 @@ public class PrescriptionsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, Prescription prescription)
     {
         if (id != prescription.Id) return NotFound();
@@ -88,6 +98,7 @@ public class PrescriptionsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
         var prescription = _repo.GetById(id);
@@ -98,6 +109,7 @@ public class PrescriptionsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
         if (!_repo.Delete(id))

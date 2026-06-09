@@ -1,5 +1,7 @@
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +18,15 @@ public class DoctorsController : Controller
 
     [HttpGet("/Doctors")]
     [Route("/staff/doctors")]
+    [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_DoctorList", _repo.GetAll(term));
 
     [HttpGet("/Doctors/Options")]
+    [AllowAnonymous]
     public IActionResult Options(string? term)
     {
         var options = _repo.GetAll(term)
@@ -35,6 +40,7 @@ public class DoctorsController : Controller
         return Json(options);
     }
 
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var doctor = _repo.GetById(id);
@@ -43,6 +49,7 @@ public class DoctorsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
         LoadDepartmentSelection();
@@ -51,6 +58,7 @@ public class DoctorsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Doctor doctor, int[] selectedDepartmentIds)
     {
         if (!ModelState.IsValid)
@@ -64,6 +72,7 @@ public class DoctorsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
         var doctor = _repo.GetByIdForEdit(id);
@@ -75,6 +84,7 @@ public class DoctorsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, Doctor doctor, int[] selectedDepartmentIds)
     {
         if (id != doctor.Id) return NotFound();
@@ -90,6 +100,7 @@ public class DoctorsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
         var doctor = _repo.GetById(id);
@@ -100,6 +111,7 @@ public class DoctorsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
         if (!_repo.Delete(id))

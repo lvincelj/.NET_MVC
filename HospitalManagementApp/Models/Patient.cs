@@ -36,5 +36,6 @@ namespace HospitalManagementApp.Models
 
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();
         public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new HashSet<MedicalRecord>();
+        public virtual ICollection<PacijentDatoteka> PacijentDatoteke { get; set; } = new HashSet<PacijentDatoteka>();
     }
 }

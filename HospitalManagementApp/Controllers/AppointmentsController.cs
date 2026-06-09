@@ -1,5 +1,7 @@
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +20,16 @@ public class AppointmentsController : Controller
         _doctorRepo = doctorRepo;
     }
 
+    [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_AppointmentList", _repo.GetAll(term));
 
     [HttpGet("/Appointments/Details/{id:int}")]
     [HttpGet("/schedule/appointments/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var appointment = _repo.GetById(id);
@@ -33,6 +38,7 @@ public class AppointmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
         LoadLookupLists();
@@ -41,6 +47,7 @@ public class AppointmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Appointment appointment)
     {
         if (!ModelState.IsValid)
@@ -54,6 +61,7 @@ public class AppointmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
         var appointment = _repo.GetByIdForEdit(id);
@@ -65,6 +73,7 @@ public class AppointmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, Appointment appointment)
     {
         if (id != appointment.Id) return NotFound();
@@ -80,6 +89,7 @@ public class AppointmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
         var appointment = _repo.GetById(id);
@@ -89,6 +99,7 @@ public class AppointmentsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
         if (!_repo.Delete(id)) return NotFound();

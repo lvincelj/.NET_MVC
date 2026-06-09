@@ -1,5 +1,7 @@
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +18,16 @@ public class MedicalRecordsController : Controller
 
     [HttpGet("/MedicalRecords")]
     [HttpGet("/medical-records")]
+    [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_MedicalRecordList", _repo.GetAll(term));
 
     [HttpGet("/MedicalRecords/Options")]
     [HttpGet("/medical-records/options")]
+    [AllowAnonymous]
     public IActionResult Options(string? term)
     {
         var options = _repo.GetAll(term)
@@ -38,6 +43,7 @@ public class MedicalRecordsController : Controller
 
     [HttpGet("/MedicalRecords/Details/{id:int}")]
     [HttpGet("/medical-records/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var record = _repo.GetById(id);
@@ -47,6 +53,7 @@ public class MedicalRecordsController : Controller
 
     [HttpPost("/medical-records/{id:int}/mark-reviewed")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult MarkReviewed(int id)
     {
         var record = _repo.GetById(id);
@@ -57,6 +64,7 @@ public class MedicalRecordsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
         LoadPatientSelection();
@@ -65,6 +73,7 @@ public class MedicalRecordsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(MedicalRecord record)
     {
         if (!ModelState.IsValid)
@@ -78,6 +87,7 @@ public class MedicalRecordsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
         var record = _repo.GetByIdForEdit(id);
@@ -89,6 +99,7 @@ public class MedicalRecordsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, MedicalRecord record)
     {
         if (id != record.Id) return NotFound();
@@ -104,6 +115,7 @@ public class MedicalRecordsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
         var record = _repo.GetById(id);
@@ -114,6 +126,7 @@ public class MedicalRecordsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
         if (!_repo.Delete(id))

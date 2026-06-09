@@ -1,6 +1,10 @@
 @model HospitalManagementApp.Models.Patient
 @{
     ViewData["Title"] = $"{Model.FirstName} {Model.LastName}";
+    var canManage = User.IsInRole("Admin") || User.IsInRole("Doctor");
+    var canDelete = User.IsInRole("Admin");
+    var canManageFiles = canManage;
+    var allowedTypes = "application/pdf,image/jpeg,image/png,application/dicom,application/octet-stream";
 }
 
 <div class="hm-page-header">
@@ -16,10 +20,19 @@
 
 <a class="hm-back-link" asp-controller="Patients" asp-action="Index">‹ Back to Patients</a>
 
-<div class="mb-3">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
-</div>
+@if (canManage || canDelete)
+{
+    <div class="mb-3">
+        @if (canManage)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+        }
+        @if (canDelete)
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
+        }
+    </div>
+}
 
 <div class="hm-detail-card">
     <div class="hm-detail-card__header">Patient Details</div>
@@ -51,6 +64,33 @@
     </div>
 </div>
 
+<h2 class="hm-section-title">Datoteke pacijenta</h2>
+
+@if (canManageFiles)
+{
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" />
+
+    <form id="patient-file-dropzone"
+          class="dropzone mb-3"
+          asp-controller="Patients"
+          asp-action="UploadFile"
+          asp-route-id="@Model.Id"
+          method="post"
+          enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="dz-message" data-dz-message>
+            <span>Povuci datoteke ovdje ili klikni za upload (PDF/JPG/PNG/DICOM, max 20MB).</span>
+        </div>
+    </form>
+}
+
+<div class="hm-detail-card mt-3">
+    <div class="hm-detail-card__header">Pohranjene datoteke</div>
+    <div class="hm-detail-card__body">
+        <ul id="patient-file-list" class="mb-0" data-list-url="@Url.Action("GetFiles", "Patients", new { id = Model.Id })"></ul>
+    </div>
+</div>
+
 @if (Model.MedicalRecords != null && Model.MedicalRecords.Any())
 {
     <h2 class="hm-section-title">Medical Records</h2>
@@ -71,6 +111,154 @@
             </div>
         }
     </section>
+}
+
+@section Scripts {
+        @if (canManageFiles)
+        {
+        <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+        }
+        <script>
+            const canManageFiles = @canManageFiles.ToString().ToLowerInvariant();
+            const patientId = @Model.Id;
+            const filesListElement = document.getElementById('patient-file-list');
+            const filesListUrl = filesListElement.getAttribute('data-list-url');
+            const deleteUrlTemplate = `/patients/${patientId}/files/__FILE_ID__/delete`;
+
+            function escapeHtml(value) {
+                return (value ?? '')
+                    .toString()
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#039;');
+            }
+
+            function formatSize(bytes) {
+                return `${Math.round((bytes / 1024) * 10) / 10} KB`;
+            }
+
+            function renderFileList(items) {
+                filesListElement.innerHTML = '';
+
+                if (!items || items.length === 0) {
+                    filesListElement.innerHTML = '<li id="no-patient-files" class="text-muted">Nema učitanih datoteka.</li>';
+                    return;
+                }
+
+                for (const item of items) {
+                    const li = document.createElement('li');
+                    li.id = `patient-file-${item.id}`;
+
+                    const uploadedAt = item.datumUtc ? new Date(item.datumUtc).toLocaleString() : '';
+                    const fileInfo = `(${escapeHtml(item.contentType)}, ${formatSize(item.velicina)}, ${escapeHtml(uploadedAt)})`;
+
+                    let actionsHtml = '';
+                    if (canManageFiles) {
+                        actionsHtml = ` <button type="button" class="btn btn-sm btn-outline-danger ms-2 patient-file-delete" data-file-id="${item.id}">Obriši</button>`;
+                    }
+
+                    li.innerHTML = `<a href="${item.putanja}" target="_blank" rel="noopener">${escapeHtml(item.originalnoIme)}</a> <span class="text-muted">${fileInfo}</span>${actionsHtml}`;
+                    filesListElement.appendChild(li);
+                }
+            }
+
+            async function loadPatientFiles() {
+                try {
+                    const response = await fetch(filesListUrl, { credentials: 'same-origin' });
+                    if (!response.ok) {
+                        throw new Error('Neuspješno učitavanje datoteka.');
+                    }
+
+                    const data = await response.json();
+                    renderFileList(data);
+                } catch (_) {
+                    filesListElement.innerHTML = '<li class="text-danger">Greška pri učitavanju datoteka.</li>';
+                }
+            }
+
+            loadPatientFiles();
+
+            let antiForgeryToken = '';
+
+            if (canManageFiles) {
+                Dropzone.autoDiscover = false;
+
+                const tokenInput = document.querySelector('#patient-file-dropzone input[name="__RequestVerificationToken"]');
+                antiForgeryToken = tokenInput ? tokenInput.value : '';
+
+                const dz = new Dropzone('#patient-file-dropzone', {
+                    paramName: 'file',
+                    maxFilesize: 20,
+                    acceptedFiles: '@allowedTypes',
+                    dictDefaultMessage: 'Povuci datoteke ovdje ili klikni za upload.',
+                    init: function () {
+                        this.on('sending', function (uploadedFile, xhr, formData) {
+                            formData.append('__RequestVerificationToken', antiForgeryToken);
+                        });
+
+                        this.on('success', function (uploadedFile) {
+                            this.removeFile(uploadedFile);
+                            loadPatientFiles();
+                        });
+
+                        this.on('error', function (uploadedFile, errorMessage, xhr) {
+                            if (xhr && xhr.responseText) {
+                                try {
+                                    const parsed = JSON.parse(xhr.responseText);
+                                    if (parsed.error) {
+                                        errorMessage = parsed.error;
+                                    }
+                                } catch (_) {
+                                }
+                            }
+
+                            const msg = typeof errorMessage === 'string' ? errorMessage : 'Greška prilikom učitavanja datoteke.';
+                            alert(msg);
+                            this.removeFile(uploadedFile);
+                        });
+                    }
+                });
+
+                filesListElement.addEventListener('click', async function (event) {
+                    const target = event.target;
+                    if (!(target instanceof HTMLElement) || !target.classList.contains('patient-file-delete')) {
+                        return;
+                    }
+
+                    const fileId = target.getAttribute('data-file-id');
+                    if (!fileId) {
+                        return;
+                    }
+
+                    if (!confirm('Jeste li sigurni da želite obrisati datoteku?')) {
+                        return;
+                    }
+
+                    const deleteUrl = deleteUrlTemplate.replace('__FILE_ID__', fileId);
+
+                    try {
+                        const response = await fetch(deleteUrl, {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'RequestVerificationToken': antiForgeryToken
+                            }
+                        });
+
+                        if (!response.ok) {
+                            const body = await response.json().catch(() => ({}));
+                            throw new Error(body.error || 'Brisanje datoteke nije uspjelo.');
+                        }
+
+                        await loadPatientFiles();
+                    } catch (error) {
+                        alert(error instanceof Error ? error.message : 'Brisanje datoteke nije uspjelo.');
+                    }
+                });
+            }
+        </script>
 }
 
 @if (Model.Appointments != null && Model.Appointments.Any())

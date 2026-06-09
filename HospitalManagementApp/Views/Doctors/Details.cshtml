@@ -1,6 +1,8 @@
 @model HospitalManagementApp.Models.Doctor
 @{
     ViewData["Title"] = $"Dr. {Model.FirstName} {Model.LastName}";
+    var canManage = User.IsInRole("Admin") || User.IsInRole("Doctor");
+    var canDelete = User.IsInRole("Admin");
 }
 
 <div class="hm-page-header">
@@ -16,10 +18,19 @@
 
 <a class="hm-back-link" asp-controller="Doctors" asp-action="Index">‹ Back to Doctors</a>
 
-<div class="mb-3">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
-</div>
+@if (canManage || canDelete)
+{
+    <div class="mb-3">
+        @if (canManage)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+        }
+        @if (canDelete)
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
+        }
+    </div>
+}
 
 <div class="hm-detail-card">
     <div class="hm-detail-card__header">Doctor Details</div>

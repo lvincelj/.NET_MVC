@@ -1,5 +1,7 @@
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +16,14 @@ public class DepartmentsController : Controller
         _repo = repo;
     }
 
+    [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_DepartmentList", _repo.GetAll(term));
 
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var department = _repo.GetById(id);
@@ -27,6 +32,7 @@ public class DepartmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
         LoadDoctorSelection();
@@ -35,6 +41,7 @@ public class DepartmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Department department, int[] selectedDoctorIds)
     {
         if (!ModelState.IsValid)
@@ -48,6 +55,7 @@ public class DepartmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
         var department = _repo.GetByIdForEdit(id);
@@ -59,6 +67,7 @@ public class DepartmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, Department department, int[] selectedDoctorIds)
     {
         if (id != department.Id) return NotFound();
@@ -74,6 +83,7 @@ public class DepartmentsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
         var department = _repo.GetById(id);
@@ -84,6 +94,7 @@ public class DepartmentsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
         if (!_repo.Delete(id))
@@ -103,5 +114,5 @@ public class DepartmentsController : Controller
             "FullName",
             selectedDoctorIds
         );
-    }
+    } 
 }

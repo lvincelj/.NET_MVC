@@ -18,6 +18,7 @@ public class PatientRepository
             .AsNoTracking()
             .Include(p => p.Appointments)
             .Include(p => p.MedicalRecords)
+            .Include(p => p.PacijentDatoteke)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -45,6 +46,7 @@ public class PatientRepository
         .Include(p => p.MedicalRecords)
             .ThenInclude(r => r.Prescriptions)
                 .ThenInclude(pr => pr.Medications)
+        .Include(p => p.PacijentDatoteke)
         .FirstOrDefault(p => p.Id == id);
 
     public Patient? GetByIdForEdit(int id) => _context.Patients
@@ -78,7 +80,8 @@ public class PatientRepository
 
     public bool CanDelete(int id) =>
         !_context.Appointments.Any(a => a.PatientId == id) &&
-        !_context.MedicalRecords.Any(r => r.PatientId == id);
+        !_context.MedicalRecords.Any(r => r.PatientId == id) &&
+        !_context.PacijentDatoteke.Any(f => f.PacijentId == id);
 
     public bool Delete(int id)
     {
