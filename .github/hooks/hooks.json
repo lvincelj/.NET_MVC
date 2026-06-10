@@ -3,14 +3,14 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -File \".github\\hooks\\log-agent-input.ps1\" -EventName UserPromptSubmit -LogPath \"lab-5\\agent_log.txt\"",
+        "command": "bash .github/hooks/log-agent-input.sh UserPromptSubmit lab-5/agent_log.txt",
         "timeout": 15
       }
     ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -File \".github\\hooks\\log-agent-input.ps1\" -EventName PreToolUse -LogPath \"lab-5\\agent_log.txt\"",
+        "command": "bash .github/hooks/log-agent-input.sh PreToolUse lab-5/agent_log.txt",
         "timeout": 15
       }
     ]
