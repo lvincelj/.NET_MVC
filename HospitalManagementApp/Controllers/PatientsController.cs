@@ -126,7 +126,6 @@ public class PatientsController : Controller
     }
 
     [HttpPost("/patients/{id:int}/files/upload")]
-    [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public async Task<IActionResult> UploadFile(int id, IFormFile file)
     {
@@ -231,7 +230,6 @@ public class PatientsController : Controller
     }
 
     [HttpPost("/patients/{patientId:int}/files/{fileId:int}/delete")]
-    [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public async Task<IActionResult> DeleteFile(int patientId, int fileId)
     {
