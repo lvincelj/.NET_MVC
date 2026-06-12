@@ -185,17 +185,29 @@
             if (canManageFiles) {
                 Dropzone.autoDiscover = false;
 
-                const tokenInput = document.querySelector('#patient-file-dropzone input[name="__RequestVerificationToken"]');
+                const dropzoneForm = document.getElementById('patient-file-dropzone');
+                const tokenInput = dropzoneForm?.querySelector('input[name="__RequestVerificationToken"]')
+                    || document.querySelector('input[name="__RequestVerificationToken"]');
                 antiForgeryToken = tokenInput ? tokenInput.value : '';
 
                 const dz = new Dropzone('#patient-file-dropzone', {
+                    url: dropzoneForm?.getAttribute('action') || window.location.pathname,
                     paramName: 'file',
                     maxFilesize: 20,
+                    withCredentials: true,
                     acceptedFiles: '@allowedTypes',
                     dictDefaultMessage: 'Povuci datoteke ovdje ili klikni za upload.',
+                    headers: antiForgeryToken
+                        ? { RequestVerificationToken: antiForgeryToken }
+                        : {},
+                    params: antiForgeryToken
+                        ? { __RequestVerificationToken: antiForgeryToken }
+                        : {},
                     init: function () {
                         this.on('sending', function (uploadedFile, xhr, formData) {
-                            formData.append('__RequestVerificationToken', antiForgeryToken);
+                            if (antiForgeryToken) {
+                                formData.append('__RequestVerificationToken', antiForgeryToken);
+                            }
                         });
 
                         this.on('success', function (uploadedFile) {
