@@ -3171,3 +3171,163 @@ body {
         padding: 18px;
     }
 }
+
+/* ===== Overflow Fixes For Auth And Dashboard ===== */
+.hm-auth-shell {
+    width: min(100%, 940px);
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+}
+
+.hm-auth-panel,
+.hm-auth-card,
+.hm-auth-form,
+.hm-auth-form > *,
+.hm-dashboard,
+.hm-dashboard-hero,
+.hm-dashboard-hero__content,
+.hm-dashboard-hero__aside,
+.hm-insight-pill,
+.hm-kpi-card,
+.hm-action-card,
+.hm-ops-card,
+.hm-ops-item,
+.hm-note-item {
+    min-width: 0;
+}
+
+.hm-auth-panel h1,
+.hm-auth-panel p,
+.hm-auth-card h2,
+.hm-auth-card__subtitle,
+.hm-auth-panel__meta span,
+.hm-dashboard-title,
+.hm-dashboard-subtitle,
+.hm-dashboard-eyebrow,
+.hm-insight-pill span,
+.hm-insight-pill strong,
+.hm-kpi-label,
+.hm-kpi-meta,
+.hm-action-card__title,
+.hm-action-card__text,
+.hm-ops-item__body strong,
+.hm-ops-item__body span,
+.hm-note-item strong,
+.hm-note-item p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.hm-auth-panel__meta span,
+.hm-status-pill {
+    max-width: 100%;
+    line-height: 1.3;
+    white-space: normal;
+}
+
+.hm-auth-form .row {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 0.85rem;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.hm-auth-form .row > * {
+    min-width: 0;
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+}
+
+.hm-auth-form .form-control,
+.hm-auth-form .btn {
+    width: 100%;
+    max-width: 100%;
+}
+
+.hm-auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hm-auth-divider::before,
+.hm-auth-divider::after {
+    position: static;
+    flex: 1 1 0;
+    width: auto;
+}
+
+.hm-health-row__head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.hm-insight-strip,
+.hm-kpi-grid,
+.hm-action-grid,
+.hm-ops-grid {
+    min-width: 0;
+}
+
+.hm-ops-item__body {
+    min-width: 0;
+}
+
+.hm-ops-item .hm-status-pill {
+    justify-self: end;
+}
+
+@media (max-width: 991.98px) {
+    .hm-auth-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hm-auth-panel,
+    .hm-auth-card {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .hm-auth-shell {
+        border-radius: 12px;
+    }
+
+    .hm-auth-panel__meta {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .hm-insight-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .hm-ops-item {
+        grid-template-columns: 1fr;
+    }
+
+    .hm-ops-item .hm-status-pill {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 480px) {
+    .hm-auth-card,
+    .hm-auth-panel {
+        padding: 16px;
+    }
+
+    .hm-auth-form .row {
+        --bs-gutter-x: 0;
+    }
+
+    .hm-auth-panel h1,
+    .hm-auth-card h2 {
+        font-size: 1.55rem;
+        line-height: 1.18;
+    }
+
+    .hm-dashboard-title {
+        font-size: 1.6rem;
+    }
+}
