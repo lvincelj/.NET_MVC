@@ -46,13 +46,13 @@
                 </span>
             </div>
         }
-        <div class="hm-field-row">
+        <div class="hm-field-row hm-field-row--stacked">
             <span class="hm-field-label">Diagnosis</span>
-            <span class="hm-field-value">@Model.Diagnosis</span>
+            <span class="hm-field-value hm-long-text">@Model.Diagnosis</span>
         </div>
-        <div class="hm-field-row">
+        <div class="hm-field-row hm-field-row--stacked">
             <span class="hm-field-label">Notes</span>
-            <span class="hm-field-value">@Model.Notes</span>
+            <span class="hm-field-value hm-long-text">@Model.Notes</span>
         </div>
         <div class="hm-field-row">
             <span class="hm-field-label">Created At</span>
@@ -76,7 +76,7 @@
                     <p><strong>Issued At:</strong> @rx.IssuedAt.ToString("dd MMM yyyy")</p>
                     @if (rx.Medications != null && rx.Medications.Any())
                     {
-                        <p><strong>Medications:</strong> @string.Join(", ", rx.Medications.Select(m => m.Name))</p>
+                        <p class="hm-card__body-row hm-card__body-row--stacked"><strong>Medications:</strong> <span class="hm-long-text">@string.Join(", ", rx.Medications.Select(m => m.Name))</span></p>
                     }
                 </div>
                 <div class="hm-card__footer">

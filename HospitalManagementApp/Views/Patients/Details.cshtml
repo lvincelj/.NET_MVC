@@ -102,7 +102,7 @@
                     <span class="hm-card__title">Record #@record.Id</span>
                 </div>
                 <div class="hm-card__body">
-                    <p><strong>Diagnosis:</strong> @record.Diagnosis</p>
+                    <p class="hm-card__body-row hm-card__body-row--stacked"><strong>Diagnosis:</strong> <span class="hm-long-text">@record.Diagnosis</span></p>
                     <p><strong>Created:</strong> @record.CreatedAt.ToString("dd MMM yyyy")</p>
                 </div>
                 <div class="hm-card__footer">

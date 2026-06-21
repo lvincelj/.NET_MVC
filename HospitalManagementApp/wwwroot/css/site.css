@@ -590,6 +590,43 @@ h1 {
 }
 .hm-field-value a:hover { text-decoration: underline; }
 
+.hm-field-row--stacked {
+    display: block;
+}
+
+.hm-field-row--stacked .hm-field-label {
+    display: block;
+    width: auto;
+    margin-bottom: 8px;
+}
+
+.hm-field-row--stacked .hm-field-value {
+    display: block;
+}
+
+.hm-long-text {
+    max-width: 72ch;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    white-space: normal;
+    line-height: 1.65;
+}
+
+.hm-card__body-row--stacked {
+    display: block !important;
+}
+
+.hm-card__body-row--stacked strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.hm-card__body-row--stacked .hm-long-text {
+    display: block;
+    max-width: 100%;
+}
+
 /* ===== Buttons ===== */
 .hm-btn-primary {
     background: var(--hm-accent);
@@ -3119,6 +3156,15 @@ body {
         left: 0;
         width: min(360px, calc(100vw - var(--hm-sidebar-w) - 36px));
         max-width: calc(100vw - var(--hm-sidebar-w) - 36px);
+    }
+
+    .hm-long-text {
+        max-width: 100%;
+        line-height: 1.58;
+    }
+
+    .hm-card__body-row--stacked {
+        padding-bottom: 10px;
     }
 }
 

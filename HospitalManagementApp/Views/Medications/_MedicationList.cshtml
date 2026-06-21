@@ -20,7 +20,7 @@ else
                 </div>
                 <div class="hm-card__body">
                     <p><strong>Prescription:</strong> #@item.PrescriptionId</p>
-                    <p><strong>Instructions:</strong> @(string.IsNullOrWhiteSpace(item.Instructions) ? "-" : item.Instructions)</p>
+                    <p class="hm-card__body-row hm-card__body-row--stacked"><strong>Instructions:</strong> <span class="hm-long-text">@(string.IsNullOrWhiteSpace(item.Instructions) ? "-" : item.Instructions)</span></p>
                 </div>
                 <div class="hm-card__footer hm-action-strip">
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
