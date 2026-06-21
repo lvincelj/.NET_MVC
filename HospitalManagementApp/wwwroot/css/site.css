@@ -476,14 +476,16 @@ h1 {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .hm-card__title {
     font-size: 1rem;
     font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.35;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
 }
 
 .hm-card__badge {
@@ -2303,9 +2305,9 @@ body {
 
 .hm-global-search__result {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(72px, auto) minmax(0, 1fr);
     gap: 10px;
-    align-items: center;
+    align-items: start;
     padding: 10px;
     border-radius: 8px;
     color: var(--hm-text);
@@ -2324,6 +2326,7 @@ body {
     align-items: center;
     justify-content: center;
     min-width: 74px;
+    max-width: 100%;
     padding: 5px 8px;
     border-radius: 999px;
     background: #f3f4f6;
@@ -2332,6 +2335,7 @@ body {
     font-weight: 800;
     line-height: 1;
     white-space: nowrap;
+    align-self: start;
 }
 
 .hm-global-search__body,
@@ -2339,25 +2343,26 @@ body {
     display: grid;
     gap: 3px;
     min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .hm-global-search__body strong,
 .hm-search-result__body strong {
-    overflow: hidden;
     color: var(--hm-primary);
     font-size: 0.92rem;
     font-weight: 760;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    white-space: normal;
 }
 
 .hm-global-search__body small,
 .hm-search-result__body small {
-    overflow: hidden;
     color: var(--hm-muted);
     font-size: 0.8rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    white-space: normal;
 }
 
 .hm-global-search__empty {
@@ -2822,9 +2827,9 @@ h1 {
 
 .hm-search-result {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(86px, auto) minmax(0, 1fr) auto;
     gap: 12px;
-    align-items: center;
+    align-items: start;
     padding: 14px 16px;
     color: var(--hm-text);
     text-decoration: none;
@@ -2844,6 +2849,8 @@ h1 {
 .hm-search-result__arrow {
     color: var(--hm-muted);
     font-size: 1.4rem;
+    line-height: 1;
+    padding-top: 2px;
 }
 
 @media (max-width: 991.98px) {
@@ -2939,14 +2946,228 @@ h1 {
     .hm-global-search__badge,
     .hm-search-result__badge {
         min-width: auto;
+        white-space: normal;
+    }
+
+    .hm-global-search__result {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
     .hm-search-result {
         grid-template-columns: 1fr auto;
+        gap: 8px 12px;
     }
 
     .hm-search-result__badge {
         grid-column: 1 / -1;
         justify-self: start;
+    }
+}
+
+/* ===== Responsive Hardening ===== */
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.hm-content,
+.hm-page-shell,
+.hm-card,
+.hm-detail-card,
+.hm-table-wrap,
+.hm-search-group,
+.hm-auth-shell {
+    min-width: 0;
+}
+
+.hm-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hm-table {
+    min-width: 760px;
+}
+
+.hm-card__footer,
+.hm-action-strip {
+    flex-wrap: wrap;
+}
+
+.hm-card__footer .btn,
+.hm-action-strip .btn {
+    white-space: normal;
+}
+
+.hm-field-value,
+.hm-record-card__meta span,
+.hm-note-item p,
+.hm-action-card__text,
+.hm-section-copy,
+.hm-page-subtitle {
+    overflow-wrap: anywhere;
+}
+
+.hm-dtp__panel {
+    max-width: calc(100vw - var(--hm-sidebar-w) - 48px);
+}
+
+@media (max-width: 991.98px) {
+    .hm-content {
+        width: calc(100% - var(--hm-sidebar-w));
+        max-width: calc(100% - var(--hm-sidebar-w));
+    }
+
+    .hm-summary-strip,
+    .hm-kpi-grid,
+    .hm-action-grid,
+    .hm-cards-grid,
+    .hm-cards-grid--index {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    }
+
+    .hm-detail-card {
+        max-width: 100%;
+    }
+
+    .hm-field-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .hm-field-label {
+        width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .hm-page-shell > .d-flex.justify-content-between {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .hm-page-shell > .d-flex.justify-content-between .btn {
+        width: 100%;
+    }
+
+    .hm-page-header {
+        padding: 20px;
+    }
+
+    .hm-dashboard-title,
+    .hm-page-title {
+        font-size: clamp(1.65rem, 9vw, 2.25rem);
+        line-height: 1.12;
+    }
+
+    .hm-dashboard-hero__actions,
+    .hm-action-card__links,
+    .hm-card__footer {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .hm-dashboard-hero__actions a,
+    .hm-action-card__links a,
+    .hm-card__footer .btn,
+    .hm-action-strip .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hm-summary-strip,
+    .hm-kpi-grid,
+    .hm-action-grid,
+    .hm-cards-grid,
+    .hm-cards-grid--index {
+        grid-template-columns: 1fr;
+    }
+
+    .hm-table-wrap {
+        padding: 10px;
+    }
+
+    .hm-table {
+        min-width: 680px;
+        font-size: 0.84rem;
+    }
+
+    .hm-table thead th,
+    .hm-table tbody td {
+        padding: 11px 12px;
+    }
+
+    .hm-ops-card,
+    .hm-kpi-card,
+    .hm-action-card,
+    .hm-note-item,
+    .hm-detail-card__body {
+        padding: 16px;
+    }
+
+    .hm-auth-shell {
+        width: 100%;
+    }
+
+    .hm-dtp__panel {
+        left: 0;
+        width: min(360px, calc(100vw - var(--hm-sidebar-w) - 36px));
+        max-width: calc(100vw - var(--hm-sidebar-w) - 36px);
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --hm-sidebar-w: 56px;
+    }
+
+    .hm-sidebar {
+        padding: 8px 6px;
+    }
+
+    .hm-logo-mark {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+
+    .hm-sidebar__nav li a {
+        padding: 11px 0;
+    }
+
+    .hm-content {
+        padding: 10px;
+    }
+
+    .hm-page-shell {
+        padding: 12px;
+    }
+
+    .hm-topbar {
+        top: 8px;
+        margin-bottom: 12px;
+    }
+
+    .hm-global-search__results {
+        position: fixed;
+        top: 72px;
+        left: calc(var(--hm-sidebar-w) + 10px);
+        right: 10px;
+        max-height: calc(100vh - 92px);
+        overflow-y: auto;
+    }
+
+    .hm-dashboard-hero,
+    .hm-dashboard-hero--pro,
+    .hm-page-header,
+    .hm-auth-card,
+    .hm-auth-panel {
+        padding: 18px;
     }
 }
