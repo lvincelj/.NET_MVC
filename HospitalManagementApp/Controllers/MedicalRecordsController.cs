@@ -63,7 +63,8 @@ public class MedicalRecordsController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    [HttpGet]
+    [HttpGet("/MedicalRecords/Create")]
+    [HttpGet("/medical-records/create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -71,7 +72,8 @@ public class MedicalRecordsController : Controller
         return View(new MedicalRecord { CreatedAt = DateTime.Now });
     }
 
-    [HttpPost]
+    [HttpPost("/MedicalRecords/Create")]
+    [HttpPost("/medical-records/create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(MedicalRecord record)
@@ -86,7 +88,8 @@ public class MedicalRecordsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
+    [HttpGet("/MedicalRecords/Edit/{id:int}")]
+    [HttpGet("/medical-records/{id:int}/edit")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
@@ -97,7 +100,8 @@ public class MedicalRecordsController : Controller
         return View(record);
     }
 
-    [HttpPost]
+    [HttpPost("/MedicalRecords/Edit/{id:int}")]
+    [HttpPost("/medical-records/{id:int}/edit")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, MedicalRecord record)
@@ -114,7 +118,8 @@ public class MedicalRecordsController : Controller
         return RedirectToAction(nameof(Details), new { id = record.Id });
     }
 
-    [HttpGet]
+    [HttpGet("/MedicalRecords/Delete/{id:int}")]
+    [HttpGet("/medical-records/{id:int}/delete")]
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
@@ -124,7 +129,9 @@ public class MedicalRecordsController : Controller
         return View(record);
     }
 
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("/MedicalRecords/Delete/{id:int}")]
+    [HttpPost("/medical-records/{id:int}/delete")]
+    [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)

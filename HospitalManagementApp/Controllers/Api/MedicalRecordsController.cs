@@ -141,6 +141,12 @@ public class MedicalRecordsController : ControllerBase
             return NotFound();
         }
 
+        var hasPrescriptions = await _context.Prescriptions.AnyAsync(p => p.MedicalRecordId == id);
+        if (hasPrescriptions)
+        {
+            return Conflict("Medical record cannot be deleted while prescriptions exist.");
+        }
+
         _context.MedicalRecords.Remove(record);
         await _context.SaveChangesAsync();
 

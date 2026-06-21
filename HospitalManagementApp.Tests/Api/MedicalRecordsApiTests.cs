@@ -112,4 +112,22 @@ public class MedicalRecordsApiTests : ApiTestBase
         var invalidPutResponse = await Client.PutAsJsonAsync($"/api/MedicalRecords/{recordId}", invalidPayload);
         Assert.Equal(HttpStatusCode.BadRequest, invalidPutResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task MedicalRecords_Delete_WithPrescriptions_ReturnsConflict()
+    {
+        await ResetDatabaseAsync();
+
+        int recordId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+            await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+        });
+
+        var deleteResponse = await Client.DeleteAsync($"/api/MedicalRecords/{recordId}");
+
+        Assert.Equal(HttpStatusCode.Conflict, deleteResponse.StatusCode);
+    }
 }
