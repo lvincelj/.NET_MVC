@@ -3470,3 +3470,114 @@ body {
         overflow-wrap: anywhere;
     }
 }
+
+/* ===== Compact Detail Pages And Search Clamp ===== */
+.hm-topbar,
+.hm-global-search,
+.hm-global-search__field,
+.hm-global-search input,
+.hm-search-page__form input {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.hm-global-search input,
+.hm-search-page__form input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hm-detail-card + .hm-section-title,
+.hm-cards-grid + .hm-section-title,
+.dropzone + .hm-detail-card,
+.hm-detail-card + .hm-detail-card {
+    margin-top: 30px;
+}
+
+.hm-section-title + .hm-cards-grid {
+    margin-top: 14px;
+}
+
+.hm-cards-grid {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .hm-detail-card + .hm-section-title,
+    .hm-cards-grid + .hm-section-title,
+    .dropzone + .hm-detail-card,
+    .hm-detail-card + .hm-detail-card {
+        margin-top: 34px;
+    }
+
+    .hm-section-title + .hm-cards-grid {
+        margin-top: 16px;
+    }
+
+    .hm-cards-grid {
+        gap: 18px;
+        margin-bottom: 16px;
+    }
+
+    .hm-global-search {
+        width: 100%;
+    }
+
+    .hm-global-search input,
+    .hm-search-page__form input {
+        font-size: 0.86rem;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 480px) {
+    .hm-detail-card + .hm-section-title,
+    .hm-cards-grid + .hm-section-title,
+    .dropzone + .hm-detail-card,
+    .hm-detail-card + .hm-detail-card {
+        margin-top: 38px;
+    }
+
+    .hm-section-title + .hm-cards-grid {
+        margin-top: 14px;
+    }
+
+    .hm-cards-grid {
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .hm-global-search__field,
+    .hm-global-search__field--page {
+        grid-template-columns: 30px minmax(0, 1fr);
+        min-height: 42px;
+        padding-right: 8px;
+        border-radius: 10px;
+    }
+
+    .hm-global-search__icon {
+        width: 13px;
+        height: 13px;
+        margin-left: 11px;
+        border-width: 1.8px;
+    }
+
+    .hm-global-search__icon::after {
+        right: -5px;
+        bottom: -4px;
+        width: 6px;
+    }
+
+    .hm-global-search input,
+    .hm-search-page__form input {
+        font-size: 0.78rem;
+        line-height: 1.2;
+    }
+
+    .hm-global-search input::placeholder,
+    .hm-search-page__form input::placeholder {
+        font-size: 0.78rem;
+    }
+}
