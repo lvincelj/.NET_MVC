@@ -1242,6 +1242,36 @@ a:focus-visible, button:focus-visible, input:focus-visible {
     flex-wrap: wrap;
 }
 
+.hm-action-strip .hm-action-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 92px;
+    padding: 0.38rem 0.42rem;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 760;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.hm-action-strip .hm-action-btn::before {
+    display: inline-block;
+    margin-right: 4px;
+    font-weight: 900;
+}
+
+.hm-action-btn--view::before {
+    content: "i";
+}
+
+.hm-action-btn--edit::before {
+    content: "E";
+}
+
+.hm-action-btn--delete::before {
+    content: "x";
+}
+
 .hm-action-strip .btn {
     min-width: 76px;
 }

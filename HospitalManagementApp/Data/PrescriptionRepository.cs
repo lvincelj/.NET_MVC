@@ -75,21 +75,19 @@ public class PrescriptionRepository
         return true;
     }
 
-    public bool CanDelete(int id) => !_context.Medications.Any(m => m.PrescriptionId == id);
+    public bool CanDelete(int id) => _context.Prescriptions.Any(p => p.Id == id);
 
     public bool Delete(int id)
     {
-        if (!CanDelete(id))
-        {
-            return false;
-        }
-
-        var prescription = _context.Prescriptions.FirstOrDefault(p => p.Id == id);
+        var prescription = _context.Prescriptions
+            .Include(p => p.Medications)
+            .FirstOrDefault(p => p.Id == id);
         if (prescription == null)
         {
             return false;
         }
 
+        _context.Medications.RemoveRange(prescription.Medications);
         _context.Prescriptions.Remove(prescription);
         _context.SaveChanges();
         return true;

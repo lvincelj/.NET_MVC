@@ -24,14 +24,14 @@ else
                     <p class="hm-card__body-row hm-card__body-row--stacked"><strong>Diagnosis:</strong> <span class="hm-long-text">@item.Diagnosis</span></p>
                 </div>
                 <div class="hm-card__footer hm-action-strip">
-                    <a asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary hm-action-btn hm-action-btn--view" title="View" aria-label="View medical record">View</a>
                     @if (canManage)
                     {
-                        <a asp-controller="MedicalRecords" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="MedicalRecords" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary hm-action-btn hm-action-btn--edit" title="Edit" aria-label="Edit medical record">Edit</a>
                     }
                     @if (canDelete)
                     {
-                        <a asp-controller="MedicalRecords" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                        <a asp-controller="MedicalRecords" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger hm-action-btn hm-action-btn--delete" title="Delete" aria-label="Delete medical record">Delete</a>
                     }
                 </div>
             </article>

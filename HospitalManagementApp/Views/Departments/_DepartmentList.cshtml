@@ -24,14 +24,14 @@ else
                     <p><strong>Phone:</strong> @(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</p>
                 </div>
                 <div class="hm-card__footer hm-action-strip">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-controller="Departments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary hm-action-btn hm-action-btn--view" title="View" aria-label="View department">View</a>
                     @if (canManage)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="Departments" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary hm-action-btn hm-action-btn--edit" title="Edit" aria-label="Edit department">Edit</a>
                     }
                     @if (canDelete)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                        <a asp-controller="Departments" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger hm-action-btn hm-action-btn--delete" title="Delete" aria-label="Delete department">Delete</a>
                     }
                 </div>
             </article>

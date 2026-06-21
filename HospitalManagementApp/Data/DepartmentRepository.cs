@@ -91,21 +91,19 @@ public class DepartmentRepository
         return true;
     }
 
-    public bool CanDelete(int id) => !_context.Doctors.Any(d => d.Departments.Any(dep => dep.Id == id));
+    public bool CanDelete(int id) => _context.Departments.Any(d => d.Id == id);
 
     public bool Delete(int id)
     {
-        if (!CanDelete(id))
-        {
-            return false;
-        }
-
-        var department = _context.Departments.FirstOrDefault(d => d.Id == id);
+        var department = _context.Departments
+            .Include(d => d.Doctors)
+            .FirstOrDefault(d => d.Id == id);
         if (department == null)
         {
             return false;
         }
 
+        department.Doctors.Clear();
         _context.Departments.Remove(department);
         _context.SaveChanges();
         return true;

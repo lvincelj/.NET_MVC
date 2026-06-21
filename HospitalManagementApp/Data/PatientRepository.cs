@@ -78,24 +78,28 @@ public class PatientRepository
         return true;
     }
 
-    public bool CanDelete(int id) =>
-        !_context.Appointments.Any(a => a.PatientId == id) &&
-        !_context.MedicalRecords.Any(r => r.PatientId == id) &&
-        !_context.PacijentDatoteke.Any(f => f.PacijentId == id);
+    public bool CanDelete(int id) => _context.Patients.Any(p => p.Id == id);
 
     public bool Delete(int id)
     {
-        if (!CanDelete(id))
-        {
-            return false;
-        }
-
-        var patient = _context.Patients.FirstOrDefault(p => p.Id == id);
+        var patient = _context.Patients
+            .Include(p => p.Appointments)
+            .Include(p => p.MedicalRecords)
+                .ThenInclude(r => r.Prescriptions)
+                    .ThenInclude(pr => pr.Medications)
+            .Include(p => p.PacijentDatoteke)
+            .FirstOrDefault(p => p.Id == id);
         if (patient == null)
         {
             return false;
         }
 
+        var prescriptions = patient.MedicalRecords.SelectMany(r => r.Prescriptions).ToList();
+        _context.Medications.RemoveRange(prescriptions.SelectMany(p => p.Medications));
+        _context.Prescriptions.RemoveRange(prescriptions);
+        _context.MedicalRecords.RemoveRange(patient.MedicalRecords);
+        _context.Appointments.RemoveRange(patient.Appointments);
+        _context.PacijentDatoteke.RemoveRange(patient.PacijentDatoteke);
         _context.Patients.Remove(patient);
         _context.SaveChanges();
         return true;

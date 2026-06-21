@@ -123,12 +123,24 @@ public class PatientsController : ControllerBase
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> Delete(int id)
     {
-        var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == id);
+        var patient = await _context.Patients
+            .Include(p => p.Appointments)
+            .Include(p => p.MedicalRecords)
+                .ThenInclude(r => r.Prescriptions)
+                    .ThenInclude(pr => pr.Medications)
+            .Include(p => p.PacijentDatoteke)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (patient is null)
         {
             return NotFound();
         }
 
+        var prescriptions = patient.MedicalRecords.SelectMany(r => r.Prescriptions).ToList();
+        _context.Medications.RemoveRange(prescriptions.SelectMany(p => p.Medications));
+        _context.Prescriptions.RemoveRange(prescriptions);
+        _context.MedicalRecords.RemoveRange(patient.MedicalRecords);
+        _context.Appointments.RemoveRange(patient.Appointments);
+        _context.PacijentDatoteke.RemoveRange(patient.PacijentDatoteke);
         _context.Patients.Remove(patient);
         await _context.SaveChangesAsync();
 

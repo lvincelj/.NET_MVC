@@ -15,9 +15,9 @@
     <dd class="col-sm-9">#@Model.PrescriptionId</dd>
 </dl>
 
-<form asp-action="Delete" method="post">
+<form asp-controller="Medications" asp-action="Delete" asp-route-id="@Model.Id" method="post">
     @Html.AntiForgeryToken()
     <input asp-for="Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+    <a asp-controller="Medications" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
 </form>

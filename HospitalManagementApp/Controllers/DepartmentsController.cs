@@ -97,11 +97,7 @@ public class DepartmentsController : Controller
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
-        if (!_repo.Delete(id))
-        {
-            TempData["Error"] = "Department cannot be deleted while doctors are assigned.";
-            return RedirectToAction(nameof(Delete), new { id });
-        }
+        if (!_repo.Delete(id)) return NotFound();
 
         return RedirectToAction(nameof(Index));
     }

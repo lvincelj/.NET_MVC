@@ -24,14 +24,14 @@ else
                     <p><strong>Issued At:</strong> @item.IssuedAt.ToString("yyyy-MM-dd HH:mm")</p>
                 </div>
                 <div class="hm-card__footer hm-action-strip">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a asp-controller="Prescriptions" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary hm-action-btn hm-action-btn--view" title="View" aria-label="View prescription">View</a>
                     @if (canManage)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="Prescriptions" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary hm-action-btn hm-action-btn--edit" title="Edit" aria-label="Edit prescription">Edit</a>
                     }
                     @if (canDelete)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                        <a asp-controller="Prescriptions" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger hm-action-btn hm-action-btn--delete" title="Delete" aria-label="Delete prescription">Delete</a>
                     }
                 </div>
             </article>

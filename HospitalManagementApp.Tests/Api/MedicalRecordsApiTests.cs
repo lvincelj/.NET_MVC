@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using HospitalManagementApp.Tests.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace HospitalManagementApp.Tests.Api;
@@ -114,7 +115,7 @@ public class MedicalRecordsApiTests : ApiTestBase
     }
 
     [Fact]
-    public async Task MedicalRecords_Delete_WithPrescriptions_ReturnsConflict()
+    public async Task MedicalRecords_Delete_WithPrescriptions_DeletesRelatedData()
     {
         await ResetDatabaseAsync();
 
@@ -126,8 +127,25 @@ public class MedicalRecordsApiTests : ApiTestBase
             await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
         });
 
+        int prescriptionId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            prescriptionId = await context.Prescriptions
+                .Where(p => p.MedicalRecordId == recordId)
+                .Select(p => p.Id)
+                .SingleAsync();
+            await TestDataSeeder.CreateMedicationAsync(context, prescriptionId);
+        });
+
         var deleteResponse = await Client.DeleteAsync($"/api/MedicalRecords/{recordId}");
 
-        Assert.Equal(HttpStatusCode.Conflict, deleteResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            Assert.False(await context.MedicalRecords.AnyAsync(r => r.Id == recordId));
+            Assert.False(await context.Prescriptions.AnyAsync(p => p.Id == prescriptionId));
+            Assert.False(await context.Medications.AnyAsync(m => m.PrescriptionId == prescriptionId));
+        });
     }
 }

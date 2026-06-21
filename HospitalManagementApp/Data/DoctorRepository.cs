@@ -97,23 +97,21 @@ public class DoctorRepository
         return true;
     }
 
-    public bool CanDelete(int id) =>
-        !_context.Appointments.Any(a => a.DoctorId == id) &&
-        !_context.Departments.Any(d => d.Doctors.Any(doc => doc.Id == id));
+    public bool CanDelete(int id) => _context.Doctors.Any(d => d.Id == id);
 
     public bool Delete(int id)
     {
-        if (!CanDelete(id))
-        {
-            return false;
-        }
-
-        var doctor = _context.Doctors.FirstOrDefault(d => d.Id == id);
+        var doctor = _context.Doctors
+            .Include(d => d.Departments)
+            .Include(d => d.Appointments)
+            .FirstOrDefault(d => d.Id == id);
         if (doctor == null)
         {
             return false;
         }
 
+        doctor.Departments.Clear();
+        _context.Appointments.RemoveRange(doctor.Appointments);
         _context.Doctors.Remove(doctor);
         _context.SaveChanges();
         return true;

@@ -135,12 +135,15 @@ public class PrescriptionsController : ControllerBase
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> Delete(int id)
     {
-        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(p => p.Id == id);
+        var prescription = await _context.Prescriptions
+            .Include(p => p.Medications)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (prescription is null)
         {
             return NotFound();
         }
 
+        _context.Medications.RemoveRange(prescription.Medications);
         _context.Prescriptions.Remove(prescription);
         await _context.SaveChangesAsync();
 

@@ -135,18 +135,17 @@ public class MedicalRecordsController : ControllerBase
     [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> Delete(int id)
     {
-        var record = await _context.MedicalRecords.FirstOrDefaultAsync(r => r.Id == id);
+        var record = await _context.MedicalRecords
+            .Include(r => r.Prescriptions)
+                .ThenInclude(p => p.Medications)
+            .FirstOrDefaultAsync(r => r.Id == id);
         if (record is null)
         {
             return NotFound();
         }
 
-        var hasPrescriptions = await _context.Prescriptions.AnyAsync(p => p.MedicalRecordId == id);
-        if (hasPrescriptions)
-        {
-            return Conflict("Medical record cannot be deleted while prescriptions exist.");
-        }
-
+        _context.Medications.RemoveRange(record.Prescriptions.SelectMany(p => p.Medications));
+        _context.Prescriptions.RemoveRange(record.Prescriptions);
         _context.MedicalRecords.Remove(record);
         await _context.SaveChangesAsync();
 

@@ -136,11 +136,7 @@ public class MedicalRecordsController : Controller
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
-        if (!_repo.Delete(id))
-        {
-            TempData["Error"] = "Medical record cannot be deleted while prescriptions exist.";
-            return RedirectToAction(nameof(Delete), new { id });
-        }
+        if (!_repo.Delete(id)) return NotFound();
 
         return RedirectToAction(nameof(Index));
     }

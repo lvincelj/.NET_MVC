@@ -74,21 +74,21 @@ public class MedicalRecordRepository
         return true;
     }
 
-    public bool CanDelete(int id) => !_context.Prescriptions.Any(p => p.MedicalRecordId == id);
+    public bool CanDelete(int id) => _context.MedicalRecords.Any(r => r.Id == id);
 
     public bool Delete(int id)
     {
-        if (!CanDelete(id))
-        {
-            return false;
-        }
-
-        var record = _context.MedicalRecords.FirstOrDefault(r => r.Id == id);
+        var record = _context.MedicalRecords
+            .Include(r => r.Prescriptions)
+                .ThenInclude(p => p.Medications)
+            .FirstOrDefault(r => r.Id == id);
         if (record == null)
         {
             return false;
         }
 
+        _context.Medications.RemoveRange(record.Prescriptions.SelectMany(p => p.Medications));
+        _context.Prescriptions.RemoveRange(record.Prescriptions);
         _context.MedicalRecords.Remove(record);
         _context.SaveChanges();
         return true;

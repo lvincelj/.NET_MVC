@@ -21,7 +21,8 @@ public class DoctorsController : Controller
     [AllowAnonymous]
     public IActionResult Index(string? term) => View(_repo.GetAll(term));
 
-    [HttpGet]
+    [HttpGet("/Doctors/Search")]
+    [HttpGet("/staff/doctors/search")]
     [AllowAnonymous]
     public IActionResult Search(string? term) => PartialView("_DoctorList", _repo.GetAll(term));
 
@@ -40,6 +41,8 @@ public class DoctorsController : Controller
         return Json(options);
     }
 
+    [HttpGet("/Doctors/Details/{id:int}")]
+    [HttpGet("/staff/doctors/{id:int}")]
     [AllowAnonymous]
     public IActionResult Details(int id)
     {
@@ -48,7 +51,8 @@ public class DoctorsController : Controller
         return View(doctor);
     }
 
-    [HttpGet]
+    [HttpGet("/Doctors/Create")]
+    [HttpGet("/staff/doctors/create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -56,7 +60,8 @@ public class DoctorsController : Controller
         return View(new Doctor());
     }
 
-    [HttpPost]
+    [HttpPost("/Doctors/Create")]
+    [HttpPost("/staff/doctors/create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Doctor doctor, int[] selectedDepartmentIds)
@@ -71,7 +76,8 @@ public class DoctorsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
+    [HttpGet("/Doctors/Edit/{id:int}")]
+    [HttpGet("/staff/doctors/{id:int}/edit")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id)
     {
@@ -82,7 +88,8 @@ public class DoctorsController : Controller
         return View(doctor);
     }
 
-    [HttpPost]
+    [HttpPost("/Doctors/Edit/{id:int}")]
+    [HttpPost("/staff/doctors/{id:int}/edit")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Edit(int id, Doctor doctor, int[] selectedDepartmentIds)
@@ -99,7 +106,8 @@ public class DoctorsController : Controller
         return RedirectToAction(nameof(Details), new { id = doctor.Id });
     }
 
-    [HttpGet]
+    [HttpGet("/Doctors/Delete/{id:int}")]
+    [HttpGet("/staff/doctors/{id:int}/delete")]
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult Delete(int id)
     {
@@ -109,16 +117,14 @@ public class DoctorsController : Controller
         return View(doctor);
     }
 
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("/Doctors/Delete/{id:int}")]
+    [HttpPost("/staff/doctors/{id:int}/delete")]
+    [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin)]
     public IActionResult DeleteConfirmed(int id)
     {
-        if (!_repo.Delete(id))
-        {
-            TempData["Error"] = "Doctor cannot be deleted while assigned to departments or appointments.";
-            return RedirectToAction(nameof(Delete), new { id });
-        }
+        if (!_repo.Delete(id)) return NotFound();
 
         return RedirectToAction(nameof(Index));
     }
