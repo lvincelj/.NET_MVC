@@ -1,0 +1,77 @@
+@model HospitalManagementApp.Models.GlobalSearchViewModel
+
+@{
+    ViewData["Title"] = "Search";
+    var groupedResults = Model.Results
+        .GroupBy(result => result.Category)
+        .OrderBy(group => group.Key == "Navigation" ? 0 : 1)
+        .ThenBy(group => group.Key)
+        .ToList();
+}
+
+<section class="hm-search-page">
+    <div class="hm-page-header">
+        <div>
+            <p class="hm-page-kicker">Global search</p>
+            <h1 class="hm-page-title">Search CareFlow</h1>
+            <p class="hm-page-subtitle">Find menu items, pages, patients, doctors, appointments, records, prescriptions, and medications from one place.</p>
+        </div>
+    </div>
+
+    <form class="hm-search-page__form" asp-controller="Search" asp-action="Index" method="get">
+        <label class="visually-hidden" for="search-query-page">Search</label>
+        <div class="hm-global-search__field hm-global-search__field--page">
+            <span class="hm-global-search__icon" aria-hidden="true"></span>
+            <input id="search-query-page" name="query" value="@Model.Query" autocomplete="off" placeholder="Search pages, patients, doctors, records..." />
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+    @if (string.IsNullOrWhiteSpace(Model.Query))
+    {
+        <div class="hm-search-empty">
+            <strong>Start typing to search across the hospital workspace.</strong>
+            <span>Try a patient name, doctor specialty, room, department, diagnosis, medication, or menu item.</span>
+        </div>
+    }
+    else if (!Model.Results.Any())
+    {
+        <div class="hm-search-empty">
+            <strong>No results found for "@Model.Query".</strong>
+            <span>Try a shorter term, a last name, room number, diagnosis, or module name.</span>
+        </div>
+    }
+    else
+    {
+        <div class="hm-search-summary">
+            <strong>@Model.Results.Count</strong>
+            <span>results for "@Model.Query"</span>
+        </div>
+
+        <div class="hm-search-results">
+            @foreach (var group in groupedResults)
+            {
+                <section class="hm-search-group">
+                    <div class="hm-search-group__head">
+                        <h2>@group.Key</h2>
+                        <span>@group.Count()</span>
+                    </div>
+
+                    <div class="hm-search-group__list">
+                        @foreach (var result in group)
+                        {
+                            <a class="hm-search-result" href="@result.Url">
+                                <span class="hm-search-result__badge">@result.Badge</span>
+                                <span class="hm-search-result__body">
+                                    <strong>@result.Title</strong>
+                                    <small>@result.Description</small>
+                                </span>
+                                <span class="hm-search-result__arrow" aria-hidden="true">›</span>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+    }
+</section>

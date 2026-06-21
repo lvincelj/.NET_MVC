@@ -81,6 +81,25 @@
     </aside>
 
     <main class="hm-content" id="main-content">
+        <div class="hm-topbar">
+            <form class="hm-global-search" asp-controller="Search" asp-action="Index" method="get" data-global-search="true" role="search">
+                <label class="visually-hidden" for="global-search-query">Global search</label>
+                <div class="hm-global-search__field">
+                    <span class="hm-global-search__icon" aria-hidden="true"></span>
+                    <input id="global-search-query"
+                           name="query"
+                           value="@Context.Request.Query["query"]"
+                           type="search"
+                           autocomplete="off"
+                           placeholder="Search pages, patients, doctors, records..."
+                           aria-label="Search pages, menus and hospital data"
+                           aria-controls="global-search-results"
+                           aria-expanded="false" />
+                    <button type="submit">Search</button>
+                </div>
+                <div class="hm-global-search__results" id="global-search-results" role="listbox" aria-label="Search suggestions"></div>
+            </form>
+        </div>
         <div class="hm-page-shell">
             @RenderBody()
         </div>
