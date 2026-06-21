@@ -3,14 +3,14 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "bash .github/hooks/log-agent-input.sh UserPromptSubmit lab-5/agent_log.txt",
+        "command": "bash .github/hooks/log-agent-input.sh UserPromptSubmit ProjectAgentLogs/agent_log.txt",
         "timeout": 15
       }
     ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "bash .github/hooks/log-agent-input.sh PreToolUse lab-5/agent_log.txt",
+        "command": "bash .github/hooks/log-agent-input.sh PreToolUse ProjectAgentLogs/agent_log.txt",
         "timeout": 15
       }
     ]

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="hm-layout">
@@ -26,11 +26,11 @@
 
     <aside class="hm-sidebar" aria-label="Main navigation">
         <a class="hm-sidebar__brand" asp-controller="Home" asp-action="Index">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <rect width="28" height="28" rx="8" fill="#00B8A0"/>
-                <path d="M14 7v14M7 14h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            <span>HospitalMgmt</span>
+            <span class="hm-logo-mark" aria-hidden="true">HM</span>
+            <span class="hm-sidebar__brand-text">
+                <strong>Hospital Management</strong>
+                <em>Operations Console</em>
+            </span>
         </a>
         <ul class="hm-sidebar__nav" role="list">
             <li><a asp-controller="Home" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
@@ -65,14 +65,14 @@
                 <div class="small text-white-50 mb-2">Signed in as @User.Identity?.Name</div>
                 <form asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-sm btn-outline-light w-100">Logout</button>
+                    <button type="submit" class="btn btn-sm w-100 hm-auth-btn hm-auth-btn--ghost">Logout</button>
                 </form>
             }
             else
             {
                 <div class="d-grid gap-2">
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-light">Login</a>
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-sm btn-light">Register</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm hm-auth-btn hm-auth-btn--ghost">Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-sm hm-auth-btn hm-auth-btn--solid">Register</a>
                 </div>
             }
         </div>

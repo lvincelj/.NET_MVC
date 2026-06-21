@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+    var now = DateTime.Now;
+    var scheduleHealth = Math.Min(100, Math.Max(12, Model.TodayAppointments * 7));
+    var staffCapacity = Math.Min(100, Math.Max(18, Model.ActiveDoctors * 10));
+    var documentationHealth = Math.Max(8, 100 - Math.Min(92, Model.PendingRecords * 6));
 }
 
 <div class="hm-dashboard">
@@ -11,30 +15,54 @@
         </ol>
     </nav>
 
-    <section class="hm-dashboard-hero">
+    <section class="hm-dashboard-hero hm-dashboard-hero--pro">
         <div class="hm-dashboard-hero__content">
-            <span class="hm-dashboard-eyebrow">Welcome back</span>
-            <h1 class="hm-dashboard-title">Hospital operations at a glance</h1>
-            <p class="hm-dashboard-subtitle">Monitor appointments, staff coverage, and patient activity from a single dashboard.</p>
+            <span class="hm-dashboard-eyebrow">Live overview · @now.ToString("dd MMM yyyy")</span>
+            <h1 class="hm-dashboard-title">Clinical Operations Dashboard</h1>
+            <p class="hm-dashboard-subtitle">A focused command center for scheduling, staffing, and patient-flow visibility across your hospital.</p>
             <div class="hm-dashboard-hero__actions">
                 <a class="hm-btn-primary" asp-controller="Appointments" asp-action="Index">Review Schedule</a>
                 <a class="hm-btn-secondary" asp-controller="Patients" asp-action="Index">Open Patients</a>
             </div>
+
+            <div class="hm-insight-strip" aria-label="Primary insights">
+                <div class="hm-insight-pill">
+                    <span>Appointments</span>
+                    <strong>@Model.TodayAppointments</strong>
+                </div>
+                <div class="hm-insight-pill">
+                    <span>Doctors Active</span>
+                    <strong>@Model.ActiveDoctors</strong>
+                </div>
+                <div class="hm-insight-pill">
+                    <span>Records Pending</span>
+                    <strong>@Model.PendingRecords</strong>
+                </div>
+            </div>
         </div>
 
-        <aside class="hm-dashboard-hero__aside" aria-label="Today at a glance">
-            <span class="hm-dashboard-panel-label">Today at a glance</span>
-            <div class="hm-dashboard-glance">
-                <strong>@Model.TodayAppointments</strong>
-                <span>appointments planned</span>
+        <aside class="hm-dashboard-hero__aside hm-system-health" aria-label="System health">
+            <span class="hm-dashboard-panel-label">System health</span>
+            <div class="hm-health-row">
+                <div class="hm-health-row__head">
+                    <strong>Schedule readiness</strong>
+                    <span>@scheduleHealth%</span>
+                </div>
+                <div class="hm-health-bar"><span style="width: @scheduleHealth%"></span></div>
             </div>
-            <div class="hm-dashboard-glance">
-                <strong>@Model.ActiveDoctors</strong>
-                <span>doctors on roster</span>
+            <div class="hm-health-row">
+                <div class="hm-health-row__head">
+                    <strong>Staff capacity</strong>
+                    <span>@staffCapacity%</span>
+                </div>
+                <div class="hm-health-bar"><span style="width: @staffCapacity%"></span></div>
             </div>
-            <div class="hm-dashboard-glance">
-                <strong>@Model.PendingRecords</strong>
-                <span>records ready for review</span>
+            <div class="hm-health-row">
+                <div class="hm-health-row__head">
+                    <strong>Documentation flow</strong>
+                    <span>@documentationHealth%</span>
+                </div>
+                <div class="hm-health-bar"><span style="width: @documentationHealth%"></span></div>
             </div>
         </aside>
     </section>
