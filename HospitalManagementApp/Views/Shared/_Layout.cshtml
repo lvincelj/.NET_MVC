@@ -61,20 +61,26 @@
                 <span>Prescriptions</span></a></li>
         </ul>
 
-        <div class="px-3 pb-3 mt-auto">
+        <div class="px-3 pb-3 mt-auto hm-sidebar-auth">
             @if (SignInManager.IsSignedIn(User))
             {
                 <div class="small text-white-50 mb-2">Signed in as @User.Identity?.Name</div>
                 <form asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-sm w-100 hm-auth-btn hm-auth-btn--ghost">Logout</button>
+                    <button type="submit" class="btn btn-sm w-100 hm-auth-btn hm-auth-btn--ghost hm-auth-btn--logout">
+                        <span class="hm-auth-btn__text">Logout</span>
+                    </button>
                 </form>
             }
             else
             {
                 <div class="d-grid gap-2">
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm hm-auth-btn hm-auth-btn--ghost">Login</a>
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-sm hm-auth-btn hm-auth-btn--solid">Register</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm hm-auth-btn hm-auth-btn--ghost hm-auth-btn--login">
+                        <span class="hm-auth-btn__text">Login</span>
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-sm hm-auth-btn hm-auth-btn--solid hm-auth-btn--register">
+                        <span class="hm-auth-btn__text">Register</span>
+                    </a>
                 </div>
             }
         </div>

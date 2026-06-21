@@ -3331,3 +3331,142 @@ body {
         font-size: 1.6rem;
     }
 }
+
+/* ===== iPhone Sidebar And Card Tightening ===== */
+.hm-sidebar-auth {
+    min-width: 0;
+}
+
+.hm-auth-btn__text {
+    display: inline;
+}
+
+@media (max-width: 991.98px) {
+    .hm-sidebar-auth {
+        display: flex;
+        justify-content: center;
+        padding: 0 0 4px !important;
+    }
+
+    .hm-sidebar-auth .small {
+        display: none;
+    }
+
+    .hm-sidebar-auth form,
+    .hm-sidebar-auth .d-grid {
+        width: 100%;
+    }
+
+    .hm-sidebar-auth .d-grid {
+        display: grid !important;
+        gap: 8px !important;
+        justify-items: center;
+    }
+
+    .hm-sidebar-auth .hm-auth-btn {
+        width: 42px;
+        height: 42px;
+        min-height: 42px;
+        padding: 0;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0;
+        line-height: 1;
+    }
+
+    .hm-sidebar-auth .hm-auth-btn__text {
+        display: none;
+    }
+
+    .hm-sidebar-auth .hm-auth-btn::before {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        line-height: 1;
+    }
+
+    .hm-sidebar-auth .hm-auth-btn--login::before {
+        content: "IN";
+    }
+
+    .hm-sidebar-auth .hm-auth-btn--register::before {
+        content: "+";
+        font-size: 1.18rem;
+    }
+
+    .hm-sidebar-auth .hm-auth-btn--logout::before {
+        content: "OUT";
+        font-size: 0.62rem;
+    }
+
+    .hm-card__header {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .hm-card__title,
+    .hm-record-card__title {
+        font-size: 0.95rem;
+        line-height: 1.25;
+    }
+}
+
+@media (max-width: 480px) {
+    .hm-sidebar-auth .hm-auth-btn {
+        width: 36px;
+        height: 36px;
+        min-height: 36px;
+        border-radius: 10px;
+    }
+
+    .hm-page-shell h1 {
+        font-size: 1.45rem;
+        line-height: 1.16;
+        overflow-wrap: anywhere;
+    }
+
+    .hm-dashboard-title,
+    .hm-page-title {
+        font-size: 1.55rem;
+        line-height: 1.13;
+    }
+
+    .hm-section-title {
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+
+    .hm-card__title,
+    .hm-record-card__title {
+        font-size: 0.9rem;
+        line-height: 1.22;
+    }
+
+    .hm-card__badge {
+        max-width: 100%;
+        padding: 4px 7px;
+        font-size: 0.64rem;
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .hm-card__body {
+        padding: 14px;
+        font-size: 0.84rem;
+        line-height: 1.55;
+    }
+
+    .hm-record-card__hero {
+        font-size: 1.35rem;
+        line-height: 1.1;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+    }
+}
