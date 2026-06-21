@@ -3,7 +3,7 @@ param(
     [string]$EventName,
 
     [Parameter(Mandatory = $false)]
-    [string]$LogPath = "lab-5\agent_log.txt"
+    [string]$LogPath = "ProjectAgentLogs\agent_log.txt"
 )
 
 $ErrorActionPreference = "Stop"

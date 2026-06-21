@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Usage: log-agent-input.sh <EventName> [LogPath]
 EVENT_NAME="${1:-UnknownEvent}"
-LOG_PATH="${2:-lab-5/agent_log.txt}"
+LOG_PATH="${2:-ProjectAgentLogs/agent_log.txt}"
 
 LOG_DIR="$(dirname "$LOG_PATH")"
 mkdir -p "$LOG_DIR"

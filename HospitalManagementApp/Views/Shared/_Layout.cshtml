@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] — Hospital Management</title>
+    <title>@ViewData["Title"] — CareFlow</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,10 +26,12 @@
 
     <aside class="hm-sidebar" aria-label="Main navigation">
         <a class="hm-sidebar__brand" asp-controller="Home" asp-action="Index">
-            <span class="hm-logo-mark" aria-hidden="true">HM</span>
+            <span class="hm-logo-mark" aria-hidden="true">
+                <span></span>
+            </span>
             <span class="hm-sidebar__brand-text">
-                <strong>Hospital Management</strong>
-                <em>Operations Console</em>
+                <strong>CareFlow</strong>
+                <em>Hospital OS</em>
             </span>
         </a>
         <ul class="hm-sidebar__nav" role="list">
