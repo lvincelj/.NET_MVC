@@ -24,14 +24,14 @@ else
                     <p><strong>Phone:</strong> @(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</p>
                 </div>
                 <div class="hm-card__footer hm-action-strip">
-                    <a asp-controller="Patients" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary hm-action-btn hm-action-btn--view" title="View" aria-label="View patient">View</a>
+                    <a href="/Patients/Details/@item.Id" class="btn btn-sm btn-outline-secondary hm-action-btn hm-action-btn--view" title="View" aria-label="View patient">View</a>
                     @if (canManage)
                     {
-                        <a asp-controller="Patients" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary hm-action-btn hm-action-btn--edit" title="Edit" aria-label="Edit patient">Edit</a>
+                        <a href="/Patients/Edit/@item.Id" class="btn btn-sm btn-outline-primary hm-action-btn hm-action-btn--edit" title="Edit" aria-label="Edit patient">Edit</a>
                     }
                     @if (canDelete)
                     {
-                        <a asp-controller="Patients" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger hm-action-btn hm-action-btn--delete" title="Delete" aria-label="Delete patient">Delete</a>
+                        <a href="/Patients/Delete/@item.Id" class="btn btn-sm btn-outline-danger hm-action-btn hm-action-btn--delete" title="Delete" aria-label="Delete patient">Delete</a>
                     }
                 </div>
             </article>

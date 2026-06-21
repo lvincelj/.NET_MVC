@@ -38,6 +38,59 @@ public class MedicalRecordsMvcTests : ApiTestBase
         Assert.DoesNotContain("{\"", body);
     }
 
+    [Theory]
+    [InlineData("Appointments")]
+    [InlineData("Departments")]
+    [InlineData("Doctors")]
+    [InlineData("MedicalRecords")]
+    [InlineData("Medications")]
+    [InlineData("Patients")]
+    [InlineData("Prescriptions")]
+    public async Task EntityIndexPages_RenderMvcDeleteLinks_NotApiLinks(string controller)
+    {
+        await ResetDatabaseAsync();
+
+        var id = await CreateEntityForControllerAsync(controller);
+
+        var response = await Client.GetAsync($"/{controller}");
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains($"/{controller}/Delete", body);
+        Assert.DoesNotContain($"/api/{controller}/{id}", body, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("Appointments")]
+    [InlineData("Departments")]
+    [InlineData("Doctors")]
+    [InlineData("MedicalRecords")]
+    [InlineData("Medications")]
+    [InlineData("Patients")]
+    [InlineData("Prescriptions")]
+    public async Task EntityDeletePost_RemovesEntityAndRedirects(string controller)
+    {
+        await ResetDatabaseAsync();
+
+        var id = await CreateEntityForControllerAsync(controller);
+        using var client = CreateNoRedirectClient();
+
+        var getResponse = await client.GetAsync($"/{controller}/Delete/{id}");
+        var getBody = await getResponse.Content.ReadAsStringAsync();
+        var antiForgeryToken = ExtractAntiForgeryToken(getBody);
+
+        var postResponse = await client.PostAsync(
+            $"/{controller}/Delete/{id}",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["Id"] = id.ToString(),
+                ["__RequestVerificationToken"] = antiForgeryToken
+            }));
+
+        Assert.Equal(HttpStatusCode.Redirect, postResponse.StatusCode);
+        await AssertEntityDeletedAsync(controller, id);
+    }
+
     [Fact]
     public async Task PatientDeletePost_RemovesNestedMedicalData()
     {
@@ -214,5 +267,25 @@ public class MedicalRecordsMvcTests : ApiTestBase
         });
 
         return id;
+    }
+
+    private async Task AssertEntityDeletedAsync(string controller, int id)
+    {
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var exists = controller switch
+            {
+                "Appointments" => await context.Appointments.AnyAsync(a => a.Id == id),
+                "Departments" => await context.Departments.AnyAsync(d => d.Id == id),
+                "Doctors" => await context.Doctors.AnyAsync(d => d.Id == id),
+                "MedicalRecords" => await context.MedicalRecords.AnyAsync(r => r.Id == id),
+                "Medications" => await context.Medications.AnyAsync(m => m.Id == id),
+                "Patients" => await context.Patients.AnyAsync(p => p.Id == id),
+                "Prescriptions" => await context.Prescriptions.AnyAsync(p => p.Id == id),
+                _ => true
+            };
+
+            Assert.False(exists);
+        });
     }
 }

@@ -23,11 +23,11 @@
     <div class="mb-3">
         @if (canManage)
         {
-            <a asp-controller="Medications" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+            <a href="/Medications/Edit/@Model.Id" class="btn btn-outline-primary">Edit</a>
         }
         @if (canDelete)
         {
-            <a asp-controller="Medications" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
+            <a href="/Medications/Delete/@Model.Id" class="btn btn-outline-danger">Delete</a>
         }
     </div>
 }

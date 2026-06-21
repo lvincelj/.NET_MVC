@@ -1254,23 +1254,6 @@ a:focus-visible, button:focus-visible, input:focus-visible {
     text-align: center;
 }
 
-.hm-action-strip .hm-action-btn::before {
-    display: inline-block;
-    margin-right: 4px;
-    font-weight: 900;
-}
-
-.hm-action-btn--view::before {
-    content: "i";
-}
-
-.hm-action-btn--edit::before {
-    content: "E";
-}
-
-.hm-action-btn--delete::before {
-    content: "x";
-}
 
 .hm-action-strip .btn {
     min-width: 76px;
