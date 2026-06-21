@@ -1,11 +1,19 @@
 using System;
+using System.Diagnostics;
 using HospitalManagementApp.Data;
+using HospitalManagementApp.Infrastructure.Logging;
 using HospitalManagementApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddFileLogger(
+    builder.Configuration.GetSection(FileLoggingOptions.SectionName),
+    builder.Environment.ContentRootPath);
+builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
@@ -82,6 +90,25 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.Use(async (context, next) =>
+{
+    var stopwatch = Stopwatch.StartNew();
+
+    try
+    {
+        await next();
+    }
+    finally
+    {
+        stopwatch.Stop();
+        app.Logger.LogInformation(
+            "HTTP {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds} ms",
+            context.Request.Method,
+            context.Request.Path.Value,
+            context.Response.StatusCode,
+            stopwatch.ElapsedMilliseconds);
+    }
+});
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
