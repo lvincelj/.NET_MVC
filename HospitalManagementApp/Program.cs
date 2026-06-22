@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsEnvironment("Testing"))
 {
     builder.Configuration.AddUserSecrets<Program>(optional: true);
+    AddLocalUserSecretsFile(builder.Configuration);
 }
 
 builder.Logging.AddFileLogger(
@@ -146,3 +147,26 @@ app.MapControllers();
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+static void AddLocalUserSecretsFile(IConfigurationBuilder configuration)
+{
+    const string userSecretsId = "adbe883b-735d-479e-955a-978f77236cb8";
+    var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+    if (!string.IsNullOrWhiteSpace(home))
+    {
+        configuration.AddJsonFile(
+            Path.Combine(home, ".microsoft", "usersecrets", userSecretsId, "secrets.json"),
+            optional: true,
+            reloadOnChange: true);
+    }
+
+    var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+    if (!string.IsNullOrWhiteSpace(appData))
+    {
+        configuration.AddJsonFile(
+            Path.Combine(appData, "Microsoft", "UserSecrets", userSecretsId, "secrets.json"),
+            optional: true,
+            reloadOnChange: true);
+    }
+}
