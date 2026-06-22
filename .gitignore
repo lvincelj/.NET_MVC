@@ -285,6 +285,11 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Playwright
+playwright-report/
+test-results/
+HospitalManagementApp/HospitalManagementApp.playwright.db*
+
 # Visual Studio 6 build log
 *.plg
 

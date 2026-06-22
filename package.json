@@ -1,0 +1,12 @@
+{
+  "name": "hospital-management-app-api-tests",
+  "private": true,
+  "scripts": {
+    "test:api": "playwright test",
+    "test:api:headed": "playwright test --headed",
+    "test:api:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.0"
+  }
+}
