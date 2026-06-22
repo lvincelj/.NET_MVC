@@ -1239,14 +1239,14 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 .hm-action-strip {
     justify-content: flex-end;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .hm-action-strip .hm-action-btn {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-width: 0;
-    max-width: 92px;
-    padding: 0.38rem 0.42rem;
+    max-width: none;
+    padding: 0.36rem 0.58rem;
     border-radius: 8px;
     font-size: 0.72rem;
     font-weight: 760;
@@ -1256,7 +1256,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 
 .hm-action-strip .btn {
-    min-width: 76px;
+    min-width: 54px;
+    white-space: nowrap;
 }
 
 .hm-empty-state {
@@ -3047,9 +3048,19 @@ body {
     flex-wrap: wrap;
 }
 
+.hm-card__footer.hm-action-strip,
+.hm-action-strip {
+    flex-wrap: nowrap;
+}
+
 .hm-card__footer .btn,
 .hm-action-strip .btn {
     white-space: normal;
+}
+
+.hm-card__footer.hm-action-strip .btn,
+.hm-action-strip .btn {
+    white-space: nowrap;
 }
 
 .hm-field-value,
@@ -3123,12 +3134,30 @@ body {
         align-items: stretch;
     }
 
+    .hm-card__footer.hm-action-strip {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 6px;
+    }
+
     .hm-dashboard-hero__actions a,
     .hm-action-card__links a,
     .hm-card__footer .btn,
     .hm-action-strip .btn {
         width: 100%;
         text-align: center;
+    }
+
+    .hm-card__footer.hm-action-strip .btn,
+    .hm-action-strip .btn {
+        width: auto;
+        min-width: 50px;
+        padding-right: 0.46rem;
+        padding-left: 0.46rem;
+        white-space: nowrap;
     }
 
     .hm-summary-strip,
