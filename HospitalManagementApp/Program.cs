@@ -55,8 +55,10 @@ builder.Services.AddChatClient(services =>
     }
 
     return new OpenAI.Chat.ChatClient(model, apiKey).AsIChatClient();
-});
-builder.Services.AddScoped<IMedicalDocumentSummarizer, MedicalDocumentSummarizer>();
+})
+.UseFunctionInvocation();
+builder.Services.AddScoped<IDataAssistantToolProvider, DataAssistantToolProvider>();
+builder.Services.AddScoped<IDataAssistantService, DataAssistantService>();
 
 builder.Services
     .AddIdentity<AppUser, IdentityRole>(options =>

@@ -13,44 +13,44 @@ public class AiApiTests : ApiTestBase
     }
 
     [Fact]
-    public async Task MedicalSummary_WithMissingApiKey_Returns503WithoutSendingData()
+    public async Task DataAssistant_WithMissingApiKey_Returns503WithoutSendingData()
     {
         await ResetDatabaseAsync();
 
-        var response = await Client.PostAsJsonAsync("/api/ai/medical-summary", new
+        var response = await Client.PostAsJsonAsync("/api/ai/data-assistant", new
         {
-            text = "Patient details have been removed. Notes mention fever, cough, follow-up plan, and medication review."
+            question = "appointments tomorrow for Dr. House"
         });
         var body = await response.Content.ReadFromJsonAsync<MissingAiConfigurationResponse>();
 
         Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
         Assert.NotNull(body);
-        Assert.Contains("AI summarization is not configured", body.Error);
-        Assert.Equal(MedicalSummaryDisclaimer.Text, body.Disclaimer);
+        Assert.Contains("AI data assistant is not configured", body.Error);
+        Assert.Equal(DataAssistantDisclaimer.Text, body.Disclaimer);
     }
 
     [Fact]
-    public async Task MedicalSummaryUi_ReturnsHtmlWithPrivacyNotice()
+    public async Task DataAssistantUi_ReturnsHtmlWithVerificationNotice()
     {
         await ResetDatabaseAsync();
 
-        var response = await Client.GetAsync("/ai/medical-summary");
+        var response = await Client.GetAsync("/ai/data-assistant");
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("text/html", response.Content.Headers.ContentType?.MediaType);
-        Assert.Contains("AI Medical Summary", body);
-        Assert.Contains("Remove names, identifiers", body);
+        Assert.Contains("Data Assistant", body);
+        Assert.Contains("verified against the official records", body);
     }
 
     [Fact]
-    public async Task MedicalSummary_WithShortInput_ReturnsValidationProblem()
+    public async Task DataAssistant_WithShortInput_ReturnsValidationProblem()
     {
         await ResetDatabaseAsync();
 
-        var response = await Client.PostAsJsonAsync("/api/ai/medical-summary", new
+        var response = await Client.PostAsJsonAsync("/api/ai/data-assistant", new
         {
-            text = "Too short"
+            question = ""
         });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

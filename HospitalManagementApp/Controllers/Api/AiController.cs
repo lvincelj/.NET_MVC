@@ -9,16 +9,16 @@ namespace HospitalManagementApp.Controllers.Api;
 [Authorize]
 public class AiController : ControllerBase
 {
-    private readonly IMedicalDocumentSummarizer _summarizer;
+    private readonly IDataAssistantService _assistant;
 
-    public AiController(IMedicalDocumentSummarizer summarizer)
+    public AiController(IDataAssistantService assistant)
     {
-        _summarizer = summarizer;
+        _assistant = assistant;
     }
 
-    [HttpPost("medical-summary")]
-    public async Task<ActionResult<MedicalSummaryResult>> SummarizeMedicalDocument(
-        [FromBody] MedicalSummaryRequest request,
+    [HttpPost("data-assistant")]
+    public async Task<ActionResult<DataAssistantResult>> AskDataAssistant(
+        [FromBody] DataAssistantRequest request,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -28,19 +28,19 @@ public class AiController : ControllerBase
 
         try
         {
-            return Ok(await _summarizer.SummarizeAsync(request.Text, cancellationToken));
+            return Ok(await _assistant.AnswerAsync(request.Question, cancellationToken));
         }
         catch (AiConfigurationException ex)
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable, new
             {
                 error = ex.Message,
-                disclaimer = MedicalSummaryDisclaimer.Text
+                disclaimer = DataAssistantDisclaimer.Text
             });
         }
         catch (ArgumentException ex)
         {
-            ModelState.AddModelError(nameof(MedicalSummaryRequest.Text), ex.Message);
+            ModelState.AddModelError(nameof(DataAssistantRequest.Question), ex.Message);
             return ValidationProblem(ModelState);
         }
     }

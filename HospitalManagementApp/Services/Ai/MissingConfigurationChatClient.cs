@@ -4,7 +4,7 @@ namespace HospitalManagementApp.Services.Ai;
 
 public sealed class MissingConfigurationChatClient : IChatClient
 {
-    private const string Message = "AI summarization is not configured. Set AI:OpenAI:ApiKey or OPENAI_API_KEY.";
+    private const string Message = "AI data assistant is not configured. Set AI:OpenAI:ApiKey in User Secrets or OPENAI_API_KEY.";
 
     public Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages,

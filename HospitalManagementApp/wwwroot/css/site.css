@@ -3685,7 +3685,7 @@ body {
     }
 }
 
-/* ===== AI Summary ===== */
+/* ===== AI Data Assistant ===== */
 .hm-ai-panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
@@ -3713,6 +3713,66 @@ body {
 .hm-ai-actions {
     display: flex;
     justify-content: flex-end;
+}
+
+.hm-ai-chat {
+    display: grid;
+    gap: 14px;
+}
+
+.hm-chat-window {
+    display: grid;
+    gap: 12px;
+    min-height: 300px;
+    align-content: start;
+}
+
+.hm-chat-message {
+    max-width: min(100%, 760px);
+    border-radius: 14px;
+    padding: 12px 14px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.hm-chat-message strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+    color: var(--hm-muted);
+}
+
+.hm-chat-message p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.hm-chat-message--assistant {
+    justify-self: start;
+    background: #f5f8ff;
+    border: 1px solid rgba(10, 132, 255, 0.14);
+}
+
+.hm-chat-message--user {
+    justify-self: end;
+    background: #111827;
+    color: #ffffff;
+}
+
+.hm-chat-message--user strong {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.hm-chat-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.hm-chat-input textarea {
+    min-height: 76px;
+    resize: vertical;
 }
 
 .hm-ai-note {
@@ -3763,6 +3823,14 @@ body {
 
     .hm-ai-actions,
     .hm-ai-actions .btn {
+        width: 100%;
+    }
+
+    .hm-chat-input {
+        grid-template-columns: 1fr;
+    }
+
+    .hm-chat-input .btn {
         width: 100%;
     }
 }

@@ -7,22 +7,22 @@ namespace HospitalManagementApp.Controllers;
 [Authorize]
 public class AiController : Controller
 {
-    private readonly IMedicalDocumentSummarizer _summarizer;
+    private readonly IDataAssistantService _assistant;
 
-    public AiController(IMedicalDocumentSummarizer summarizer)
+    public AiController(IDataAssistantService assistant)
     {
-        _summarizer = summarizer;
+        _assistant = assistant;
     }
 
-    [HttpGet("/ai/medical-summary")]
-    public IActionResult MedicalSummary()
+    [HttpGet("/ai/data-assistant")]
+    public IActionResult DataAssistant()
     {
-        return View(new MedicalSummaryRequest());
+        return View(new DataAssistantRequest());
     }
 
-    [HttpPost("/ai/medical-summary")]
+    [HttpPost("/ai/data-assistant")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> MedicalSummary(MedicalSummaryRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> DataAssistant(DataAssistantRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -31,7 +31,7 @@ public class AiController : Controller
 
         try
         {
-            ViewBag.SummaryResult = await _summarizer.SummarizeAsync(request.Text, cancellationToken);
+            ViewBag.AssistantResult = await _assistant.AnswerAsync(request.Question, cancellationToken);
         }
         catch (AiConfigurationException ex)
         {
@@ -39,7 +39,7 @@ public class AiController : Controller
         }
         catch (ArgumentException ex)
         {
-            ModelState.AddModelError(nameof(MedicalSummaryRequest.Text), ex.Message);
+            ModelState.AddModelError(nameof(DataAssistantRequest.Question), ex.Message);
         }
 
         return View(request);
