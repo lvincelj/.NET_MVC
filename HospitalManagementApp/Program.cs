@@ -3,7 +3,9 @@ using System.Diagnostics;
 using HospitalManagementApp.Data;
 using HospitalManagementApp.Infrastructure.Logging;
 using HospitalManagementApp.Models;
+using HospitalManagementApp.Services.Ai;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +28,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAutoMapper(_ => { }, typeof(Program).Assembly);
+builder.Services.Configure<AiOptions>(builder.Configuration.GetSection(AiOptions.SectionName));
+builder.Services.AddChatClient(services =>
+{
+    var configuration = services.GetRequiredService<IConfiguration>();
+    var apiKey = configuration["AI:OpenAI:ApiKey"] ?? configuration["OPENAI_API_KEY"];
+    var model = configuration["AI:OpenAI:Model"] ?? "gpt-4o-mini";
+
+    if (string.IsNullOrWhiteSpace(apiKey))
+    {
+        return new MissingConfigurationChatClient();
+    }
+
+    return new OpenAI.Chat.ChatClient(model, apiKey).AsIChatClient();
+});
+builder.Services.AddScoped<IMedicalDocumentSummarizer, MedicalDocumentSummarizer>();
 
 builder.Services
     .AddIdentity<AppUser, IdentityRole>(options =>
