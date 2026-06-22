@@ -141,6 +141,34 @@ public class MedicalRecordsMvcTests : ApiTestBase
     }
 
     [Fact]
+    public async Task PatientDetails_ReturnsHtmlFromCleanAndLegacyRoutes()
+    {
+        await ResetDatabaseAsync();
+
+        var patientId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            patientId = await TestDataSeeder.CreatePatientAsync(context);
+        });
+
+        var indexResponse = await Client.GetAsync("/Patients");
+        var indexBody = await indexResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, indexResponse.StatusCode);
+        Assert.Contains($"/patients/{patientId}", indexBody);
+
+        foreach (var path in new[] { $"/patients/{patientId}", $"/Patients/Details/{patientId}" })
+        {
+            var response = await Client.GetAsync(path);
+            var body = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("text/html", response.Content.Headers.ContentType?.MediaType);
+            Assert.Contains("Patient Details", body);
+        }
+    }
+
+    [Fact]
     public async Task MedicalRecordDeletePage_ReturnsHtmlView_NotApiJson()
     {
         await ResetDatabaseAsync();

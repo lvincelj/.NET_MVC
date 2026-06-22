@@ -3535,17 +3535,26 @@ body {
 .hm-global-search,
 .hm-global-search__field,
 .hm-global-search input,
-.hm-search-page__form input {
+.hm-search-page__form input,
+[data-ajax-search="true"],
+.hm-page-shell input[type="search"] {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
 }
 
 .hm-global-search input,
-.hm-search-page__form input {
+.hm-search-page__form input,
+[data-ajax-search="true"],
+.hm-page-shell input[type="search"] {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+[data-ajax-search="true"]::placeholder,
+.hm-page-shell input[type="search"]::placeholder {
+    text-overflow: ellipsis;
 }
 
 .hm-detail-card + .hm-section-title,
@@ -3585,7 +3594,9 @@ body {
     }
 
     .hm-global-search input,
-    .hm-search-page__form input {
+    .hm-search-page__form input,
+    [data-ajax-search="true"],
+    .hm-page-shell input[type="search"] {
         font-size: 0.86rem;
         font-weight: 600;
     }
@@ -3630,13 +3641,17 @@ body {
     }
 
     .hm-global-search input,
-    .hm-search-page__form input {
+    .hm-search-page__form input,
+    [data-ajax-search="true"],
+    .hm-page-shell input[type="search"] {
         font-size: 0.78rem;
         line-height: 1.2;
     }
 
     .hm-global-search input::placeholder,
-    .hm-search-page__form input::placeholder {
+    .hm-search-page__form input::placeholder,
+    [data-ajax-search="true"]::placeholder,
+    .hm-page-shell input[type="search"]::placeholder {
         font-size: 0.78rem;
     }
 }

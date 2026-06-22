@@ -50,6 +50,7 @@ public class PatientsController : Controller
     }
 
     [HttpGet("/patients/{id:int}")]
+    [HttpGet("/Patients/Details/{id:int}")]
     [AllowAnonymous]
     public IActionResult Details(int id)
     {
