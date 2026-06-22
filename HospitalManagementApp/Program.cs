@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Configuration.AddUserSecrets<Program>(optional: true);
+}
 
 builder.Logging.AddFileLogger(
     builder.Configuration.GetSection(FileLoggingOptions.SectionName),
@@ -32,8 +36,17 @@ builder.Services.Configure<AiOptions>(builder.Configuration.GetSection(AiOptions
 builder.Services.AddChatClient(services =>
 {
     var configuration = services.GetRequiredService<IConfiguration>();
-    var apiKey = configuration["AI:OpenAI:ApiKey"] ?? configuration["OPENAI_API_KEY"];
-    var model = configuration["AI:OpenAI:Model"] ?? "gpt-4o-mini";
+    var apiKey = configuration["AI:OpenAI:ApiKey"];
+    if (string.IsNullOrWhiteSpace(apiKey))
+    {
+        apiKey = configuration["OPENAI_API_KEY"];
+    }
+
+    var model = configuration["AI:OpenAI:Model"];
+    if (string.IsNullOrWhiteSpace(model))
+    {
+        model = "gpt-4o-mini";
+    }
 
     if (string.IsNullOrWhiteSpace(apiKey))
     {
