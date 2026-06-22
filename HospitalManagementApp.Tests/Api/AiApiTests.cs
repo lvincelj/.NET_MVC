@@ -57,6 +57,63 @@ public class AiApiTests : ApiTestBase
         Assert.Contains("application/problem+json", response.Content.Headers.ContentType?.MediaType);
     }
 
+    [Fact]
+    public async Task DataAssistantTools_CareMapReadsAcrossRelatedTables()
+    {
+        await ResetDatabaseAsync();
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            var departmentId = await TestDataSeeder.CreateDepartmentAsync(context);
+            var doctorId = await TestDataSeeder.CreateDoctorAsync(context, departmentId);
+            var recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+            var prescriptionId = await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+            await TestDataSeeder.CreateMedicationAsync(context, prescriptionId);
+            await TestDataSeeder.CreateAppointmentAsync(context, patientId, doctorId);
+
+            var provider = new DataAssistantToolProvider(context);
+            var result = await provider.GetPatientCareMapAsync(patientId);
+            var patient = Assert.Single(result.Items);
+            var appointment = Assert.Single(patient.Appointments);
+            var medicalRecord = Assert.Single(patient.MedicalRecords);
+            var prescription = Assert.Single(medicalRecord.Prescriptions);
+            var medication = Assert.Single(prescription.Medications);
+
+            Assert.Equal("John Tester", patient.Name);
+            Assert.Equal("Greg House", appointment.Doctor[..10]);
+            Assert.Contains("Diagnostics", appointment.DoctorSpecialty);
+            Assert.Equal("Test diagnosis", medicalRecord.Diagnosis);
+            Assert.Equal("Ibuprofen", medication.Name);
+        });
+    }
+
+    [Fact]
+    public async Task DataAssistantTools_GeneratesPatientSummaryDocument()
+    {
+        await ResetDatabaseAsync();
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            var departmentId = await TestDataSeeder.CreateDepartmentAsync(context);
+            var doctorId = await TestDataSeeder.CreateDoctorAsync(context, departmentId);
+            var recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+            var prescriptionId = await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+            await TestDataSeeder.CreateMedicationAsync(context, prescriptionId);
+            await TestDataSeeder.CreateAppointmentAsync(context, patientId, doctorId);
+
+            var provider = new DataAssistantToolProvider(context);
+            var document = await provider.GeneratePatientSummaryDocumentAsync(patientId);
+
+            Assert.Equal("generate_patient_summary_document", document.Tool);
+            Assert.Contains("Patient Summary - John Tester", document.Content);
+            Assert.Contains("Appointments", document.Content);
+            Assert.Contains("Medical Records, Prescriptions, and Medications", document.Content);
+            Assert.Contains(DataAssistantDisclaimer.Text, document.Disclaimer);
+        });
+    }
+
     private sealed class MissingAiConfigurationResponse
     {
         public string Error { get; set; } = string.Empty;

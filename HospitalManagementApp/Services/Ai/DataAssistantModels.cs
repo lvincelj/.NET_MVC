@@ -84,3 +84,45 @@ public sealed record MedicationToolItem(
     string? Instructions,
     string IssuedBy,
     string Diagnosis);
+
+public sealed record PatientCareMapToolItem(
+    int Id,
+    string Name,
+    int Age,
+    string Gender,
+    IReadOnlyList<CareMapAppointmentItem> Appointments,
+    IReadOnlyList<CareMapMedicalRecordItem> MedicalRecords);
+
+public sealed record CareMapAppointmentItem(
+    int Id,
+    string ScheduledAt,
+    string Status,
+    string Room,
+    string Doctor,
+    string DoctorSpecialty,
+    IReadOnlyList<string> Departments);
+
+public sealed record CareMapMedicalRecordItem(
+    int Id,
+    string CreatedAt,
+    string Diagnosis,
+    IReadOnlyList<CareMapPrescriptionItem> Prescriptions);
+
+public sealed record CareMapPrescriptionItem(
+    int Id,
+    string IssuedAt,
+    string IssuedBy,
+    IReadOnlyList<CareMapMedicationItem> Medications);
+
+public sealed record CareMapMedicationItem(
+    int Id,
+    string Name,
+    string Dosage,
+    string? Instructions);
+
+public sealed record DocumentToolResult(
+    string Tool,
+    string Criteria,
+    string Title,
+    string Content,
+    string Disclaimer);

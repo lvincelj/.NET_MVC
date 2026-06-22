@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
         <h1 class="mb-1">Data Assistant</h1>
-        <p class="hm-page-subtitle mb-0">Ask read-only questions about appointments, patients, doctors, departments, records, prescriptions, and medications.</p>
+        <p class="hm-page-subtitle mb-0">Ask read-only questions across patients, appointments, doctors, departments, records, prescriptions, and medications.</p>
     </div>
 </div>
 
@@ -20,7 +20,7 @@
         <div class="hm-chat-window" aria-live="polite">
             <div class="hm-chat-message hm-chat-message--assistant">
                 <strong>Assistant</strong>
-                <p>Ask a question about data already stored in CareFlow. I will answer only from read-only tool results.</p>
+                <p>Ask a question about data already stored in CareFlow. I can also create simple read-only summaries, schedules, and patient overview documents from linked records.</p>
             </div>
 
             @if (!string.IsNullOrWhiteSpace(Model.Question))
@@ -46,7 +46,7 @@
                       class="form-control"
                       rows="3"
                       maxlength="1000"
-                      placeholder="Example: appointments tomorrow for Dr. Kovač"></textarea>
+                      placeholder="Example: create a patient summary document for patient id 1"></textarea>
             <button type="submit" class="btn btn-primary">Send</button>
         </div>
         <span asp-validation-for="Question" class="text-danger"></span>
@@ -54,7 +54,7 @@
 
     <aside class="hm-ai-note">
         <strong>Read-only assistant</strong>
-        <p>Answers are based on limited tool results and should be verified against the official records. Bed availability is not tracked in the current data model.</p>
+        <p>Answers and generated documents are based on limited read-only tool results and should be verified against the official records. Bed availability is not tracked in the current data model.</p>
     </aside>
 </section>
 

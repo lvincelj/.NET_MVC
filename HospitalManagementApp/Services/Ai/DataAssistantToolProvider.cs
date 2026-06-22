@@ -56,6 +56,21 @@ public sealed class DataAssistantToolProvider : IDataAssistantToolProvider
                 SearchMedicationsAsync,
                 "search_medications",
                 "Read-only search for medications by medication name, dosage, and instructions.",
+                JsonSerializerOptions.Web),
+            AIFunctionFactory.Create(
+                GetPatientCareMapAsync,
+                "get_patient_care_map",
+                "Read-only relational patient overview across patients, appointments, doctors, departments, medical records, prescriptions, and medications. Returns only data needed for cross-table questions.",
+                JsonSerializerOptions.Web),
+            AIFunctionFactory.Create(
+                GeneratePatientSummaryDocumentAsync,
+                "generate_patient_summary_document",
+                "Generate a concise text document from app data for one patient. Read-only; omits contact data and free-text notes.",
+                JsonSerializerOptions.Web),
+            AIFunctionFactory.Create(
+                GenerateDoctorScheduleDocumentAsync,
+                "generate_doctor_schedule_document",
+                "Generate a concise doctor schedule document from appointments, patients, doctors, and departments for a date range.",
                 JsonSerializerOptions.Web)
         ];
     }
@@ -470,6 +485,237 @@ public sealed class DataAssistantToolProvider : IDataAssistantToolProvider
         return new("search_medications", BuildCriteria((nameof(medicationName), medicationName), (nameof(dosage), dosage), (nameof(instructions), instructions)), items.Count, items);
     }
 
+    [Description("Get a relational patient care map across appointments, doctors, departments, records, prescriptions, and medications.")]
+    public async Task<DataAssistantToolResult<PatientCareMapToolItem>> GetPatientCareMapAsync(
+        int? patientId = null,
+        string? patientName = null,
+        int appointmentLimit = 10,
+        int medicalRecordLimit = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var now = DateTime.UtcNow;
+        var cappedAppointmentLimit = CapLimit(appointmentLimit);
+        var cappedRecordLimit = Math.Min(CapLimit(medicalRecordLimit), 15);
+
+        var query = _context.Patients
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (patientId is not null)
+        {
+            query = query.Where(p => p.Id == patientId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(patientName))
+        {
+            var term = patientName.Trim();
+            query = query.Where(p => (p.FirstName + " " + p.LastName).Contains(term));
+        }
+
+        var patients = await query
+            .Include(p => p.Appointments)
+                .ThenInclude(a => a.Doctor)
+                    .ThenInclude(d => d.Departments)
+            .Include(p => p.MedicalRecords)
+                .ThenInclude(r => r.Prescriptions)
+                    .ThenInclude(pr => pr.Medications)
+            .AsSplitQuery()
+            .OrderBy(p => p.LastName)
+            .ThenBy(p => p.FirstName)
+            .Take(5)
+            .ToListAsync(cancellationToken);
+
+        var items = patients
+            .Select(p => new PatientCareMapToolItem(
+                p.Id,
+                p.FirstName + " " + p.LastName,
+                CalculateAge(p.DateOfBirth, now),
+                p.Gender.ToString(),
+                p.Appointments
+                    .OrderByDescending(a => a.ScheduledAt)
+                    .Take(cappedAppointmentLimit)
+                    .Select(a => new CareMapAppointmentItem(
+                        a.Id,
+                        a.ScheduledAt.ToString("yyyy-MM-dd HH:mm"),
+                        a.Status.ToString(),
+                        a.Room,
+                        a.Doctor.FirstName + " " + a.Doctor.LastName,
+                        a.Doctor.Specialty,
+                        a.Doctor.Departments.OrderBy(d => d.Name).Select(d => d.Name).ToList()))
+                    .ToList(),
+                p.MedicalRecords
+                    .OrderByDescending(r => r.CreatedAt)
+                    .Take(cappedRecordLimit)
+                    .Select(r => new CareMapMedicalRecordItem(
+                        r.Id,
+                        r.CreatedAt.ToString("yyyy-MM-dd"),
+                        r.Diagnosis,
+                        r.Prescriptions
+                            .OrderByDescending(pr => pr.IssuedAt)
+                            .Select(pr => new CareMapPrescriptionItem(
+                                pr.Id,
+                                pr.IssuedAt.ToString("yyyy-MM-dd"),
+                                pr.IssuedBy,
+                                pr.Medications
+                                    .OrderBy(m => m.Name)
+                                    .Select(m => new CareMapMedicationItem(m.Id, m.Name, m.Dosage, m.Instructions))
+                                    .ToList()))
+                            .ToList()))
+                    .ToList()))
+            .ToList();
+
+        return new(
+            "get_patient_care_map",
+            BuildCriteria((nameof(patientId), patientId), (nameof(patientName), patientName), (nameof(appointmentLimit), appointmentLimit), (nameof(medicalRecordLimit), medicalRecordLimit)),
+            items.Count,
+            items,
+            "Patient contact fields and free-text medical notes were intentionally omitted.");
+    }
+
+    [Description("Generate a concise patient summary document from related app data.")]
+    public async Task<DocumentToolResult> GeneratePatientSummaryDocumentAsync(
+        int? patientId = null,
+        string? patientName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var map = await GetPatientCareMapAsync(patientId, patientName, 10, 10, cancellationToken);
+        if (map.Items.Count == 0)
+        {
+            return new(
+                "generate_patient_summary_document",
+                BuildCriteria((nameof(patientId), patientId), (nameof(patientName), patientName)),
+                "Patient Summary",
+                "No matching patient record was found.",
+                DataAssistantDisclaimer.Text);
+        }
+
+        var patient = map.Items.First();
+        var lines = new List<string>
+        {
+            $"Patient Summary - {patient.Name}",
+            $"Generated: {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC",
+            string.Empty,
+            "Patient",
+            $"- Id: {patient.Id}",
+            $"- Age: {patient.Age}",
+            $"- Gender: {patient.Gender}",
+            string.Empty,
+            "Appointments"
+        };
+
+        if (patient.Appointments.Count == 0)
+        {
+            lines.Add("- No appointments found in the selected result window.");
+        }
+        else
+        {
+            lines.AddRange(patient.Appointments.Select(a =>
+                $"- {a.ScheduledAt}: {a.Status}, room {a.Room}, Dr. {a.Doctor} ({a.DoctorSpecialty}), departments: {FormatList(a.Departments)}"));
+        }
+
+        lines.Add(string.Empty);
+        lines.Add("Medical Records, Prescriptions, and Medications");
+
+        if (patient.MedicalRecords.Count == 0)
+        {
+            lines.Add("- No medical records found in the selected result window.");
+        }
+        else
+        {
+            foreach (var record in patient.MedicalRecords)
+            {
+                lines.Add($"- {record.CreatedAt}: {record.Diagnosis}");
+                if (record.Prescriptions.Count == 0)
+                {
+                    lines.Add("  - No prescriptions linked.");
+                    continue;
+                }
+
+                foreach (var prescription in record.Prescriptions)
+                {
+                    lines.Add($"  - Prescription {prescription.Id}, issued {prescription.IssuedAt} by {prescription.IssuedBy}");
+                    if (prescription.Medications.Count == 0)
+                    {
+                        lines.Add("    - No medications linked.");
+                        continue;
+                    }
+
+                    foreach (var medication in prescription.Medications)
+                    {
+                        var instructions = string.IsNullOrWhiteSpace(medication.Instructions)
+                            ? string.Empty
+                            : $" Instructions: {medication.Instructions}";
+                        lines.Add($"    - {medication.Name}, {medication.Dosage}.{instructions}");
+                    }
+                }
+            }
+        }
+
+        return new(
+            "generate_patient_summary_document",
+            BuildCriteria((nameof(patientId), patientId), (nameof(patientName), patientName)),
+            $"Patient Summary - {patient.Name}",
+            string.Join(Environment.NewLine, lines),
+            DataAssistantDisclaimer.Text);
+    }
+
+    [Description("Generate a doctor schedule document from appointments and related patient/department data.")]
+    public async Task<DocumentToolResult> GenerateDoctorScheduleDocumentAsync(
+        string doctorName,
+        string? dateFrom = null,
+        string? dateTo = null,
+        CancellationToken cancellationToken = default)
+    {
+        var from = ParseDate(dateFrom) ?? DateTime.UtcNow.Date;
+        var to = ParseDate(dateTo, endOfDay: true) ?? from.AddDays(7).Date.AddTicks(-1);
+        var term = (doctorName ?? string.Empty).Trim();
+
+        var appointments = await _context.Appointments
+            .AsNoTracking()
+            .Where(a => a.ScheduledAt >= from && a.ScheduledAt <= to)
+            .Where(a => string.IsNullOrWhiteSpace(term) || (a.Doctor.FirstName + " " + a.Doctor.LastName).Contains(term))
+            .OrderBy(a => a.ScheduledAt)
+            .Select(a => new
+            {
+                a.Id,
+                a.ScheduledAt,
+                a.Status,
+                a.Room,
+                Patient = a.Patient.FirstName + " " + a.Patient.LastName,
+                Doctor = a.Doctor.FirstName + " " + a.Doctor.LastName,
+                a.Doctor.Specialty,
+                Departments = a.Doctor.Departments.OrderBy(d => d.Name).Select(d => d.Name).ToList()
+            })
+            .Take(MaxLimit)
+            .ToListAsync(cancellationToken);
+
+        var titleDoctor = appointments.FirstOrDefault()?.Doctor ?? (string.IsNullOrWhiteSpace(term) ? "All Doctors" : term);
+        var lines = new List<string>
+        {
+            $"Doctor Schedule - {titleDoctor}",
+            $"Period: {from:yyyy-MM-dd} to {to:yyyy-MM-dd}",
+            $"Generated: {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC",
+            string.Empty
+        };
+
+        if (appointments.Count == 0)
+        {
+            lines.Add("No matching appointments were found.");
+        }
+        else
+        {
+            lines.AddRange(appointments.Select(a =>
+                $"- {a.ScheduledAt:yyyy-MM-dd HH:mm}: {a.Patient}, {a.Status}, room {a.Room}, specialty: {a.Specialty}, departments: {FormatList(a.Departments)}"));
+        }
+
+        return new(
+            "generate_doctor_schedule_document",
+            BuildCriteria((nameof(doctorName), doctorName), (nameof(dateFrom), dateFrom), (nameof(dateTo), dateTo)),
+            $"Doctor Schedule - {titleDoctor}",
+            string.Join(Environment.NewLine, lines),
+            DataAssistantDisclaimer.Text);
+    }
+
     private static int CapLimit(int limit) => Math.Clamp(limit <= 0 ? DefaultLimit : limit, 1, MaxLimit);
 
     private static DateTime? ParseDate(string? value, bool endOfDay = false)
@@ -502,5 +748,10 @@ public sealed class DataAssistantToolProvider : IDataAssistantToolProvider
 
         var result = string.Join(", ", active);
         return string.IsNullOrWhiteSpace(result) ? "none" : result;
+    }
+
+    private static string FormatList(IReadOnlyCollection<string> values)
+    {
+        return values.Count == 0 ? "not assigned" : string.Join(", ", values);
     }
 }
