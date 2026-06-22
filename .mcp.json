@@ -1,0 +1,35 @@
+{
+  "servers": {
+    "hospital-management": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "HospitalManagementApp.Mcp/HospitalManagementApp.Mcp.csproj",
+        "--no-build",
+        "--no-restore",
+        "--no-launch-profile"
+      ],
+      "env": {
+        "ConnectionStrings__DefaultConnection": "Data Source=HospitalManagementApp/HospitalManagementApp.local.db"
+      }
+    }
+  },
+  "mcpServers": {
+    "hospital-management": {
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "HospitalManagementApp.Mcp/HospitalManagementApp.Mcp.csproj",
+        "--no-build",
+        "--no-restore",
+        "--no-launch-profile"
+      ],
+      "env": {
+        "ConnectionStrings__DefaultConnection": "Data Source=HospitalManagementApp/HospitalManagementApp.local.db"
+      }
+    }
+  }
+}
