@@ -31,7 +31,7 @@ public class MedicationsController : Controller
         return View(medication);
     }
 
-    [HttpGet]
+    [HttpGet("/Medications/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -39,7 +39,7 @@ public class MedicationsController : Controller
         return View(new Medication());
     }
 
-    [HttpPost]
+    [HttpPost("/Medications/Create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Medication medication)

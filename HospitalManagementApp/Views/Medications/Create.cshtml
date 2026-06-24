@@ -5,7 +5,7 @@
 
 <h1>Create Medication</h1>
 
-<form asp-action="Create" method="post">
+<form action="/Medications/Create" method="post">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 

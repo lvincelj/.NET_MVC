@@ -59,11 +59,11 @@ public class PatientsController : Controller
         return View(patient);
     }
 
-    [HttpGet]
+    [HttpGet("/Patients/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create() => View(new Patient());
 
-    [HttpPost]
+    [HttpPost("/Patients/Create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Patient patient)

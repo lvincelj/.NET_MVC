@@ -37,7 +37,7 @@ public class AppointmentsController : Controller
         return View(appointment);
     }
 
-    [HttpGet]
+    [HttpGet("/Appointments/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -45,7 +45,7 @@ public class AppointmentsController : Controller
         return View(new Appointment { ScheduledAt = DateTime.Now });
     }
 
-    [HttpPost]
+    [HttpPost("/Appointments/Create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Appointment appointment)

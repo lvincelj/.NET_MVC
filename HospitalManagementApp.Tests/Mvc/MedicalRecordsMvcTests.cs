@@ -61,6 +61,32 @@ public class MedicalRecordsMvcTests : ApiTestBase
     }
 
     [Theory]
+    [InlineData("Patients", "Create Patient")]
+    [InlineData("Departments", "Create Department")]
+    [InlineData("Appointments", "Create Appointment")]
+    [InlineData("Medications", "Create Medication")]
+    [InlineData("Prescriptions", "Create Prescription")]
+    public async Task EntityCreateLinks_OpenMvcHtmlViews_NotApiJson(string controller, string expectedTitle)
+    {
+        await ResetDatabaseAsync();
+
+        var indexResponse = await Client.GetAsync($"/{controller}");
+        var indexBody = await indexResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, indexResponse.StatusCode);
+        Assert.Contains($"href=\"/{controller}/Create\"", indexBody);
+        Assert.DoesNotContain($"href=\"/api/{controller}\"", indexBody, StringComparison.OrdinalIgnoreCase);
+
+        var createResponse = await Client.GetAsync($"/{controller}/Create");
+        var createBody = await createResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
+        Assert.Contains("text/html", createResponse.Content.Headers.ContentType?.MediaType);
+        Assert.Contains(expectedTitle, createBody);
+        Assert.DoesNotContain("{\"", createBody);
+    }
+
+    [Theory]
     [InlineData("Appointments")]
     [InlineData("Departments")]
     [InlineData("Doctors")]

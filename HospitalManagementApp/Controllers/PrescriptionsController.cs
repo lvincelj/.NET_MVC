@@ -46,7 +46,7 @@ public class PrescriptionsController : Controller
         return View(prescription);
     }
 
-    [HttpGet]
+    [HttpGet("/Prescriptions/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -54,7 +54,7 @@ public class PrescriptionsController : Controller
         return View(new Prescription { IssuedAt = DateTime.Now });
     }
 
-    [HttpPost]
+    [HttpPost("/Prescriptions/Create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Prescription prescription)

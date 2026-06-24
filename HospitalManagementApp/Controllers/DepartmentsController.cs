@@ -31,7 +31,7 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    [HttpGet]
+    [HttpGet("/Departments/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create()
     {
@@ -39,7 +39,7 @@ public class DepartmentsController : Controller
         return View(new Department());
     }
 
-    [HttpPost]
+    [HttpPost("/Departments/Create")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Department department, int[] selectedDoctorIds)
