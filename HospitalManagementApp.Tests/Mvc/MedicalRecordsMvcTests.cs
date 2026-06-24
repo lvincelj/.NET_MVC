@@ -312,6 +312,39 @@ public class MedicalRecordsMvcTests : ApiTestBase
     }
 
     [Fact]
+    public async Task PrescriptionAndMedicationCreateForms_RenderParentSelectors()
+    {
+        await ResetDatabaseAsync();
+
+        int recordId = 0;
+        int prescriptionId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+            prescriptionId = await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+        });
+
+        var prescriptionResponse = await Client.GetAsync("/Prescriptions/Create");
+        var prescriptionBody = await prescriptionResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, prescriptionResponse.StatusCode);
+        Assert.Contains("select", prescriptionBody);
+        Assert.Contains("name=\"MedicalRecordId\"", prescriptionBody);
+        Assert.Contains($"value=\"{recordId}\"", prescriptionBody);
+        Assert.DoesNotContain("hm-ajax-dropdown", prescriptionBody);
+
+        var medicationResponse = await Client.GetAsync("/Medications/Create");
+        var medicationBody = await medicationResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, medicationResponse.StatusCode);
+        Assert.Contains("select", medicationBody);
+        Assert.Contains("name=\"PrescriptionId\"", medicationBody);
+        Assert.Contains($"value=\"{prescriptionId}\"", medicationBody);
+        Assert.DoesNotContain("hm-ajax-dropdown", medicationBody);
+    }
+
+    [Fact]
     public async Task MedicalRecordDeletePage_ReturnsHtmlView_NotApiJson()
     {
         await ResetDatabaseAsync();

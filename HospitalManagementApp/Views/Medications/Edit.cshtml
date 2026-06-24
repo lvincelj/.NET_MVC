@@ -24,11 +24,9 @@
 
     <div class="mb-3">
         <label asp-for="PrescriptionId" class="form-label"></label>
-        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "Prescriptions")">
-            <input asp-for="PrescriptionId" type="hidden" />
-            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedPrescriptionText" placeholder="Search prescription..." autocomplete="off" />
-            <div class="hm-ajax-dropdown__menu"></div>
-        </div>
+        <select asp-for="PrescriptionId" asp-items="ViewBag.PrescriptionId" class="form-select">
+            <option value="">Select prescription...</option>
+        </select>
         <span asp-validation-for="PrescriptionId" class="text-danger"></span>
     </div>
 

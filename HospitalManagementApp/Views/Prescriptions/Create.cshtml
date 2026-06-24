@@ -11,11 +11,9 @@
 
     <div class="mb-3">
         <label asp-for="MedicalRecordId" class="form-label"></label>
-        <div class="hm-ajax-dropdown" data-ajax-dropdown="true" data-search-url="@Url.Action("Options", "MedicalRecords")">
-            <input asp-for="MedicalRecordId" type="hidden" />
-            <input type="text" class="form-control hm-ajax-dropdown__input" value="@ViewBag.SelectedMedicalRecordText" placeholder="Search medical record..." autocomplete="off" />
-            <div class="hm-ajax-dropdown__menu"></div>
-        </div>
+        <select asp-for="MedicalRecordId" asp-items="ViewBag.MedicalRecordId" class="form-select">
+            <option value="">Select medical record...</option>
+        </select>
         <span asp-validation-for="MedicalRecordId" class="text-danger"></span>
     </div>
 
