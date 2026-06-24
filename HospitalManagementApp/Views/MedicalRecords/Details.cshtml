@@ -24,6 +24,7 @@
         @if (canManage)
         {
             <a href="/MedicalRecords/Edit/@Model.Id" class="btn btn-outline-primary">Edit</a>
+            <a href="/Prescriptions/Create?medicalRecordId=@Model.Id" class="btn btn-primary">Add Prescription</a>
         }
         @if (canDelete)
         {
@@ -84,5 +85,13 @@
                 </div>
             </div>
         }
+    </section>
+}
+else if (canManage)
+{
+    <section class="hm-empty-state">
+        <h2 class="hm-section-title">Prescriptions</h2>
+        <p>No prescriptions are linked to this medical record yet.</p>
+        <a href="/Prescriptions/Create?medicalRecordId=@Model.Id" class="btn btn-primary">Add Prescription</a>
     </section>
 }

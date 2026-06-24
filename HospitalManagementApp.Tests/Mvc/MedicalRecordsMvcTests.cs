@@ -218,6 +218,100 @@ public class MedicalRecordsMvcTests : ApiTestBase
     }
 
     [Fact]
+    public async Task MedicalRecordDetails_AllowsAdminToAddPrescription()
+    {
+        await ResetDatabaseAsync();
+
+        int recordId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+        });
+
+        using var client = CreateNoRedirectClient();
+
+        var detailsResponse = await client.GetAsync($"/MedicalRecords/Details/{recordId}");
+        var detailsBody = await detailsResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, detailsResponse.StatusCode);
+        Assert.Contains($"/Prescriptions/Create?medicalRecordId={recordId}", detailsBody);
+
+        var createResponse = await client.GetAsync($"/Prescriptions/Create?medicalRecordId={recordId}");
+        var createBody = await createResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
+        Assert.Contains($"value=\"{recordId}\"", createBody);
+
+        var antiForgeryToken = ExtractAntiForgeryToken(createBody);
+        var postResponse = await client.PostAsync(
+            "/Prescriptions/Create",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["MedicalRecordId"] = recordId.ToString(),
+                ["IssuedBy"] = "Admin Doctor",
+                ["IssuedAt"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm"),
+                ["__RequestVerificationToken"] = antiForgeryToken
+            }));
+
+        Assert.Equal(HttpStatusCode.Redirect, postResponse.StatusCode);
+        Assert.Equal($"/MedicalRecords/Details/{recordId}", postResponse.Headers.Location?.OriginalString);
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            Assert.True(await context.Prescriptions.AnyAsync(p => p.MedicalRecordId == recordId && p.IssuedBy == "Admin Doctor"));
+        });
+    }
+
+    [Fact]
+    public async Task PrescriptionDetails_AllowsAdminToAddMedication()
+    {
+        await ResetDatabaseAsync();
+
+        int prescriptionId = 0;
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            var patientId = await TestDataSeeder.CreatePatientAsync(context);
+            var recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+            prescriptionId = await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+        });
+
+        using var client = CreateNoRedirectClient();
+
+        var detailsResponse = await client.GetAsync($"/Prescriptions/Details/{prescriptionId}");
+        var detailsBody = await detailsResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, detailsResponse.StatusCode);
+        Assert.Contains($"/Medications/Create?prescriptionId={prescriptionId}", detailsBody);
+
+        var createResponse = await client.GetAsync($"/Medications/Create?prescriptionId={prescriptionId}");
+        var createBody = await createResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
+        Assert.Contains($"value=\"{prescriptionId}\"", createBody);
+
+        var antiForgeryToken = ExtractAntiForgeryToken(createBody);
+        var postResponse = await client.PostAsync(
+            "/Medications/Create",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["PrescriptionId"] = prescriptionId.ToString(),
+                ["Name"] = "Admin Medication",
+                ["Dosage"] = "20mg",
+                ["Instructions"] = "After meal",
+                ["__RequestVerificationToken"] = antiForgeryToken
+            }));
+
+        Assert.Equal(HttpStatusCode.Redirect, postResponse.StatusCode);
+        Assert.Equal($"/Prescriptions/Details/{prescriptionId}", postResponse.Headers.Location?.OriginalString);
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            Assert.True(await context.Medications.AnyAsync(m => m.PrescriptionId == prescriptionId && m.Name == "Admin Medication"));
+        });
+    }
+
+    [Fact]
     public async Task MedicalRecordDeletePage_ReturnsHtmlView_NotApiJson()
     {
         await ResetDatabaseAsync();

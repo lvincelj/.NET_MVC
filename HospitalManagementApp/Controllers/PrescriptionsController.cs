@@ -48,10 +48,14 @@ public class PrescriptionsController : Controller
 
     [HttpGet("/Prescriptions/Create")]
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
-    public IActionResult Create()
+    public IActionResult Create(int? medicalRecordId = null)
     {
-        LoadMedicalRecordSelection();
-        return View(new Prescription { IssuedAt = DateTime.Now });
+        LoadMedicalRecordSelection(medicalRecordId);
+        return View(new Prescription
+        {
+            IssuedAt = DateTime.Now,
+            MedicalRecordId = medicalRecordId ?? 0
+        });
     }
 
     [HttpPost("/Prescriptions/Create")]
@@ -68,7 +72,7 @@ public class PrescriptionsController : Controller
         }
 
         _repo.Add(prescription);
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Details", "MedicalRecords", new { id = prescription.MedicalRecordId });
     }
 
     [HttpGet]
