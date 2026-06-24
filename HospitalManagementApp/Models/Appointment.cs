@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HospitalManagementApp.Models
 {
@@ -29,9 +30,11 @@ namespace HospitalManagementApp.Models
         public string? Notes { get; set; }
 
         [ForeignKey(nameof(PatientId))]
+        [ValidateNever]
         public virtual Patient Patient { get; set; } = null!;
 
         [ForeignKey(nameof(DoctorId))]
+        [ValidateNever]
         public virtual Doctor Doctor { get; set; } = null!;
     }
 }

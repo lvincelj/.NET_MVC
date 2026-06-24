@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HospitalManagementApp.Models
 {
@@ -34,8 +35,13 @@ namespace HospitalManagementApp.Models
         [StringLength(200)]
         public string? Address { get; set; }
 
+        [ValidateNever]
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();
+
+        [ValidateNever]
         public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new HashSet<MedicalRecord>();
+
+        [ValidateNever]
         public virtual ICollection<PacijentDatoteka> PacijentDatoteke { get; set; } = new HashSet<PacijentDatoteka>();
     }
 }

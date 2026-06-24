@@ -59,6 +59,8 @@ public class PrescriptionsController : Controller
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Prescription prescription)
     {
+        ValidateMedicalRecordReference(prescription.MedicalRecordId);
+
         if (!ModelState.IsValid)
         {
             LoadMedicalRecordSelection(prescription.MedicalRecordId);
@@ -86,6 +88,8 @@ public class PrescriptionsController : Controller
     public IActionResult Edit(int id, Prescription prescription)
     {
         if (id != prescription.Id) return NotFound();
+
+        ValidateMedicalRecordReference(prescription.MedicalRecordId);
 
         if (!ModelState.IsValid)
         {
@@ -129,5 +133,13 @@ public class PrescriptionsController : Controller
 
         ViewBag.MedicalRecordId = new SelectList(records, "Id", "Display", selectedMedicalRecordId);
         ViewBag.SelectedMedicalRecordText = records.FirstOrDefault(r => r.Id == selectedMedicalRecordId)?.Display ?? string.Empty;
+    }
+
+    private void ValidateMedicalRecordReference(int medicalRecordId)
+    {
+        if (medicalRecordId > 0 && _repo.GetMedicalRecordsForSelection().All(r => r.Id != medicalRecordId))
+        {
+            ModelState.AddModelError(nameof(Prescription.MedicalRecordId), "Selected medical record does not exist.");
+        }
     }
 }

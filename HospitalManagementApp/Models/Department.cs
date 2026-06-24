@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HospitalManagementApp.Models
 {
@@ -23,6 +24,7 @@ namespace HospitalManagementApp.Models
         [StringLength(100)]
         public string? HeadOfDepartment { get; set; }
 
+        [ValidateNever]
         public virtual ICollection<Doctor> Doctors { get; set; } = new HashSet<Doctor>();
     }
 }

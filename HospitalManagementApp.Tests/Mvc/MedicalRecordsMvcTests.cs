@@ -91,6 +91,29 @@ public class MedicalRecordsMvcTests : ApiTestBase
         await AssertEntityDeletedAsync(controller, id);
     }
 
+    [Theory]
+    [InlineData("Patients")]
+    [InlineData("Departments")]
+    [InlineData("Appointments")]
+    [InlineData("Medications")]
+    [InlineData("Prescriptions")]
+    public async Task EntityCreatePost_CreatesEntityAndRedirects(string controller)
+    {
+        await ResetDatabaseAsync();
+
+        var form = await BuildCreateFormAsync(controller);
+        using var client = CreateNoRedirectClient();
+
+        var getResponse = await client.GetAsync($"/{controller}/Create");
+        var getBody = await getResponse.Content.ReadAsStringAsync();
+        form["__RequestVerificationToken"] = ExtractAntiForgeryToken(getBody);
+
+        var postResponse = await client.PostAsync($"/{controller}/Create", new FormUrlEncodedContent(form));
+
+        Assert.Equal(HttpStatusCode.Redirect, postResponse.StatusCode);
+        await AssertEntityCreatedAsync(controller);
+    }
+
     [Fact]
     public async Task PatientDeletePost_RemovesNestedMedicalData()
     {
@@ -233,7 +256,7 @@ public class MedicalRecordsMvcTests : ApiTestBase
             "name=\"__RequestVerificationToken\"[^>]*value=\"(?<value>[^\"]+)\"",
             RegexOptions.IgnoreCase);
 
-        Assert.True(match.Success, "Anti-forgery token was not rendered on the delete form.");
+        Assert.True(match.Success, "Anti-forgery token was not rendered on the form.");
         return WebUtility.HtmlDecode(match.Groups["value"].Value);
     }
 
@@ -295,6 +318,88 @@ public class MedicalRecordsMvcTests : ApiTestBase
         });
 
         return id;
+    }
+
+    private async Task<Dictionary<string, string>> BuildCreateFormAsync(string controller)
+    {
+        var form = new Dictionary<string, string>();
+
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            switch (controller)
+            {
+                case "Patients":
+                    form["FirstName"] = "Create";
+                    form["LastName"] = "Patient";
+                    form["Gender"] = "1";
+                    form["DateOfBirth"] = "1994-03-01";
+                    form["Email"] = "create.patient@test.local";
+                    form["PhoneNumber"] = "+385111222";
+                    form["Address"] = "Create Street 1";
+                    break;
+                case "Departments":
+                    form["Name"] = "Create Department";
+                    form["Location"] = "Wing C";
+                    form["PhoneNumber"] = "+385333444";
+                    form["HeadOfDepartment"] = "Dr. Create Lead";
+                    break;
+                case "Appointments":
+                    form["PatientId"] = (await TestDataSeeder.CreatePatientAsync(context)).ToString();
+                    form["DoctorId"] = (await TestDataSeeder.CreateDoctorAsync(context)).ToString();
+                    form["ScheduledAt"] = DateTime.UtcNow.AddDays(3).ToString("yyyy-MM-ddTHH:mm");
+                    form["Status"] = "1";
+                    form["Room"] = "T12";
+                    form["Notes"] = "Created through MVC test";
+                    break;
+                case "Medications":
+                    {
+                        var patientId = await TestDataSeeder.CreatePatientAsync(context);
+                        var recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+                        var prescriptionId = await TestDataSeeder.CreatePrescriptionAsync(context, recordId);
+                        form["Name"] = "Create Medication";
+                        form["Dosage"] = "10mg";
+                        form["PrescriptionId"] = prescriptionId.ToString();
+                        form["Instructions"] = "After meal";
+                        break;
+                    }
+                case "Prescriptions":
+                    {
+                        var patientId = await TestDataSeeder.CreatePatientAsync(context);
+                        var recordId = await TestDataSeeder.CreateMedicalRecordAsync(context, patientId);
+                        form["MedicalRecordId"] = recordId.ToString();
+                        form["IssuedBy"] = "Dr. Create";
+                        form["IssuedAt"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm");
+                        break;
+                    }
+            }
+        });
+
+        return form;
+    }
+
+    private async Task AssertEntityCreatedAsync(string controller)
+    {
+        await Factory.ExecuteDbContextAsync(async context =>
+        {
+            switch (controller)
+            {
+                case "Patients":
+                    Assert.True(await context.Patients.AnyAsync(p => p.FirstName == "Create" && p.LastName == "Patient"));
+                    break;
+                case "Departments":
+                    Assert.True(await context.Departments.AnyAsync(d => d.Name == "Create Department"));
+                    break;
+                case "Appointments":
+                    Assert.True(await context.Appointments.AnyAsync(a => a.Room == "T12"));
+                    break;
+                case "Medications":
+                    Assert.True(await context.Medications.AnyAsync(m => m.Name == "Create Medication"));
+                    break;
+                case "Prescriptions":
+                    Assert.True(await context.Prescriptions.AnyAsync(p => p.IssuedBy == "Dr. Create"));
+                    break;
+            }
+        });
     }
 
     private async Task AssertEntityDeletedAsync(string controller, int id)

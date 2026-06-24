@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HospitalManagementApp.Models
 {
@@ -20,9 +21,11 @@ namespace HospitalManagementApp.Models
         [StringLength(120)]
         public string IssuedBy { get; set; } = string.Empty;
 
+        [ValidateNever]
         public virtual ICollection<Medication> Medications { get; set; } = new HashSet<Medication>();
 
         [ForeignKey(nameof(MedicalRecordId))]
+        [ValidateNever]
         public virtual MedicalRecord MedicalRecord { get; set; } = null!;
     }
 }

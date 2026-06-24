@@ -50,6 +50,8 @@ public class AppointmentsController : Controller
     [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Doctor)]
     public IActionResult Create(Appointment appointment)
     {
+        ValidateReferences(appointment.PatientId, appointment.DoctorId);
+
         if (!ModelState.IsValid)
         {
             LoadLookupLists(appointment.PatientId, appointment.DoctorId);
@@ -77,6 +79,8 @@ public class AppointmentsController : Controller
     public IActionResult Edit(int id, Appointment appointment)
     {
         if (id != appointment.Id) return NotFound();
+
+        ValidateReferences(appointment.PatientId, appointment.DoctorId);
 
         if (!ModelState.IsValid)
         {
@@ -122,5 +126,18 @@ public class AppointmentsController : Controller
         ViewBag.DoctorId = new SelectList(doctors, "Id", "FullName", selectedDoctorId);
         ViewBag.SelectedPatientText = patients.FirstOrDefault(p => p.Id == selectedPatientId)?.FullName ?? string.Empty;
         ViewBag.SelectedDoctorText = doctors.FirstOrDefault(d => d.Id == selectedDoctorId)?.FullName ?? string.Empty;
+    }
+
+    private void ValidateReferences(int patientId, int doctorId)
+    {
+        if (patientId > 0 && _patientRepo.GetByIdForEdit(patientId) == null)
+        {
+            ModelState.AddModelError(nameof(Appointment.PatientId), "Selected patient does not exist.");
+        }
+
+        if (doctorId > 0 && _doctorRepo.GetByIdForEdit(doctorId) == null)
+        {
+            ModelState.AddModelError(nameof(Appointment.DoctorId), "Selected doctor does not exist.");
+        }
     }
 }

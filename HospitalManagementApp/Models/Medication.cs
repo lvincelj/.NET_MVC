@@ -2,6 +2,7 @@ namespace HospitalManagementApp.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
     public class Medication
     {
@@ -23,6 +24,7 @@ namespace HospitalManagementApp.Models
         public int PrescriptionId { get; set; }
 
         [ForeignKey(nameof(PrescriptionId))]
+        [ValidateNever]
         public virtual Prescription Prescription { get; set; } = null!;
     }
 }
