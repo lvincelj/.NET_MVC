@@ -4,10 +4,12 @@ using HospitalManagementApp.Data;
 using HospitalManagementApp.Infrastructure.Logging;
 using HospitalManagementApp.Models;
 using HospitalManagementApp.Services.Ai;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsEnvironment("Testing"))
@@ -29,8 +31,12 @@ builder.Services.AddControllersWithViews(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
+var defaultConnectionString = ResolveSqliteConnectionString(
+    builder.Configuration.GetConnectionString("DefaultConnection"),
+    builder.Environment);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(defaultConnectionString));
 
 builder.Services.AddAutoMapper(_ => { }, typeof(Program).Assembly);
 builder.Services.Configure<AiOptions>(builder.Configuration.GetSection(AiOptions.SectionName));
@@ -41,6 +47,10 @@ builder.Services.AddChatClient(services =>
     if (string.IsNullOrWhiteSpace(apiKey))
     {
         apiKey = configuration["OPENAI_API_KEY"];
+    }
+    if (string.IsNullOrWhiteSpace(apiKey))
+    {
+        apiKey = configuration["OpenAI:ApiKey"];
     }
 
     var model = configuration["AI:OpenAI:Model"];
@@ -111,6 +121,10 @@ builder.Services.AddScoped<PrescriptionRepository>();
 
 var app = builder.Build();
 
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    await ApplyDatabaseMigrationsAsync(app.Services);
+}
 await IdentitySeed.SeedRolesAndAdminAsync(app.Services);
 await AppDataSeed.SeedDemoDataAsync(app.Services);
 
@@ -121,6 +135,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeadersOptions.KnownIPNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+
+app.UseForwardedHeaders(forwardedHeadersOptions);
 app.UseHttpsRedirection();
 app.UseRouting();
 app.Use(async (context, next) =>
@@ -149,6 +171,37 @@ app.MapControllers();
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+static string ResolveSqliteConnectionString(string? configuredConnectionString, IWebHostEnvironment environment)
+{
+    var connectionString = string.IsNullOrWhiteSpace(configuredConnectionString)
+        ? "Data Source=HospitalManagementApp.local.db"
+        : configuredConnectionString;
+
+    var builder = new SqliteConnectionStringBuilder(connectionString);
+    var isAzureAppService = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
+
+    if (isAzureAppService && !Path.IsPathRooted(builder.DataSource))
+    {
+        var dataDirectory = "/home/data";
+        builder.DataSource = Path.Combine(dataDirectory, Path.GetFileName(builder.DataSource));
+    }
+
+    var databaseDirectory = Path.GetDirectoryName(builder.DataSource);
+    if (!string.IsNullOrWhiteSpace(databaseDirectory))
+    {
+        Directory.CreateDirectory(databaseDirectory);
+    }
+
+    return builder.ToString();
+}
+
+static async Task ApplyDatabaseMigrationsAsync(IServiceProvider services)
+{
+    using var scope = services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+}
 
 static void AddLocalUserSecretsFile(IConfigurationBuilder configuration)
 {
